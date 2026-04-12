@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAV // NAUTILUS SYSTEM v3.1</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23030a0e'/%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%2300ffc8' stroke-width='1'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2300a882' stroke-width='0.6' opacity='0.6'/%3E%3Ccircle cx='16' cy='16' r='5' fill='none' stroke='%2300a882' stroke-width='0.6' opacity='0.4'/%3E%3Cline x1='3' y1='16' x2='29' y2='16' stroke='%2300a882' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='16' y1='3' x2='16' y2='29' stroke='%2300a882' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='16' y1='16' x2='29' y2='16' stroke='%2300ffc8' stroke-width='1.5' opacity='0.9'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 16 16' to='360 16 16' dur='4s' repeatCount='indefinite'/%3E%3C/line%3E%3Ccircle cx='16' cy='16' r='1.5' fill='%2300ffc8'/%3E%3Ccircle cx='22' cy='10' r='1.2' fill='%2300ffc8' opacity='0.8'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;600&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root {
+  --deep:#030a0e; --hull:#0a1520; --plate:#0d1e2c;
+  --biolum:#00ffc8; --biolum-dim:#00a882;
+  --amber:#e8a030; --amber-dim:#a06820;
+  --rust:#c0392b; --alert:#ff4466; --steam:#4fc3f7; --mal:#e63946;
+  --glass:rgba(0,255,200,0.04); --text-main:#dff5ee; --text-dim:#8abfb2;
+  --pt: 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scrollbar-width:thin;scrollbar-color:var(--biolum-dim) var(--hull);}
+body{background:var(--deep);color:var(--text-main);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;cursor:crosshair;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--hull);}
+::-webkit-scrollbar-thumb{background:var(--biolum-dim);}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.13) 2px,rgba(0,0,0,0.13) 4px);pointer-events:none;z-index:1000;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 60%,transparent 55%,rgba(0,0,0,0.28) 100%);pointer-events:none;z-index:999;}
+.noise{position:fixed;inset:0;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:998;}
+
+/* ── LAYOUT 72/28 ── */
+.layout{display:grid;grid-template-columns:1fr 380px;grid-template-rows:auto 1fr auto;min-height:100vh;padding:18px;gap:0;position:relative;z-index:1;}
+
+/* ── HEADER ── */
+.header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--biolum-dim);margin-bottom:18px;position:relative;}
+.header::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:var(--biolum);opacity:0.25;filter:blur(3px);}
+.logo{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:600;color:var(--biolum);letter-spacing:0.4em;text-shadow:0 0 14px var(--biolum),0 0 30px rgba(0,255,200,0.5),0 0 60px rgba(0,255,200,0.2);animation:glow-pulse 4s ease-in-out infinite;}
+.logo em{color:var(--amber);font-style:normal;text-shadow:0 0 14px var(--amber),0 0 28px rgba(232,160,48,0.5);}
+.logo small{font-size:0.9rem;vertical-align:middle;letter-spacing:0.1em;opacity:0.85;}
+@keyframes glow-pulse{0%,100%{text-shadow:0 0 14px var(--biolum),0 0 30px rgba(0,255,200,0.5);}50%{text-shadow:0 0 22px var(--biolum),0 0 50px rgba(0,255,200,0.65);}}
+.header-gauges{display:flex;gap:20px;align-items:center;}
+.gauge-item{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.gauge-label{font-size:0.55rem;color:var(--amber);letter-spacing:0.2em;text-shadow:0 0 8px rgba(232,160,48,0.6);}
+.gauge-val{font-size:0.8rem;color:var(--biolum);letter-spacing:0.05em;text-shadow:0 0 10px var(--biolum),0 0 22px rgba(0,255,200,0.55);}
+.gauge-val.alert-active{color:var(--alert);animation:flicker 1.5s ease-in-out infinite;}
+@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.5}}
+
+/* ── PANEL SYSTEM ── */
+.panel{border:1px solid rgba(0,255,200,0.12);background:var(--glass);position:relative;margin-bottom:16px;}
+.panel:last-child{margin-bottom:0;}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1px solid transparent;transition:border-color 0.2s,background 0.2s;}
+.panel-header:hover{background:rgba(0,255,200,0.03);border-bottom-color:rgba(0,255,200,0.08);}
+.panel-label{font-size:0.6rem;color:var(--amber-dim);letter-spacing:0.25em;text-transform:uppercase;text-shadow:0 0 10px rgba(232,160,48,0.55);}
+.panel-toggle{font-size:0.65rem;color:var(--text-dim);display:flex;align-items:center;gap:6px;}
+.panel-toggle .chevron{display:inline-block;transition:transform var(--pt);}
+.panel.collapsed .chevron{transform:rotate(-90deg);}
+.panel-body{overflow:hidden;transition:max-height var(--pt),opacity var(--pt);max-height:2000px;opacity:1;}
+.panel.collapsed .panel-body{max-height:0;opacity:0;}
+.panel-content{padding:14px;}
+
+/* ── MAIN ── */
+.main-panel{display:flex;flex-direction:column;padding:0 18px 18px 0;}
+
+/* CLOCK */
+.clock-block{display:flex;align-items:baseline;gap:14px;padding:14px 16px;}
+#clock{font-size:2.8rem;color:var(--biolum);text-shadow:0 0 12px var(--biolum),0 0 28px rgba(0,255,200,0.6);letter-spacing:0.08em;line-height:1;}
+.clock-colon{animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0}}
+#date{font-size:0.88rem;color:var(--amber);letter-spacing:0.12em;font-family:'Special Elite',cursive;text-shadow:0 0 10px rgba(232,160,48,0.6);}
+#day-name{font-size:0.6rem;color:var(--text-dim);letter-spacing:0.3em;margin-top:3px;text-shadow:0 0 8px rgba(138,191,178,0.45);}
+
+/* SEARCH */
+.search-wrap{display:flex;border:1px solid rgba(0,255,200,0.25);background:var(--hull);overflow:hidden;transition:border-color 0.3s,box-shadow 0.3s;}
+.search-wrap:focus-within{border-color:var(--biolum);box-shadow:0 0 18px rgba(0,255,200,0.08);}
+.search-pre{padding:13px 14px;color:var(--amber);font-size:0.88rem;border-right:1px solid rgba(0,255,200,0.12);white-space:nowrap;text-shadow:0 0 12px rgba(232,160,48,0.65);}
+#search-input{flex:1;background:transparent;border:none;outline:none;color:var(--text-main);font-family:'Share Tech Mono',monospace;font-size:0.95rem;padding:13px 14px;caret-color:var(--biolum);}
+#search-input::placeholder{color:var(--text-dim);opacity:0.55;}
+#search-btn{background:rgba(0,255,200,0.06);border:none;border-left:1px solid rgba(0,255,200,0.12);color:var(--biolum);padding:13px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;transition:all 0.2s;text-shadow:0 0 8px rgba(0,255,200,0.5);}
+#search-btn:hover{background:rgba(0,255,200,0.13);text-shadow:0 0 14px var(--biolum);}
+.engine-row{display:flex;flex-wrap:wrap;gap:0;margin-top:5px;}
+.eng-btn{background:transparent;border:1px solid rgba(0,255,200,0.08);color:var(--text-dim);padding:5px 10px;font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;cursor:pointer;transition:all 0.2s;margin-right:-1px;white-space:nowrap;}
+.eng-btn.active,.eng-btn:hover{background:rgba(0,255,200,0.07);color:var(--biolum);border-color:rgba(0,255,200,0.28);z-index:1;text-shadow:0 0 8px var(--biolum);}
+
+/* LINKS */
+.links-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.link-card{display:flex;flex-direction:column;align-items:center;gap:7px;padding:13px 8px;border:1px solid rgba(0,255,200,0.08);background:rgba(0,255,200,0.02);text-decoration:none;color:var(--text-dim);transition:all 0.22s;position:relative;overflow:hidden;}
+.link-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--biolum);transform:scaleX(0);transition:transform 0.22s;}
+.link-card:hover{border-color:rgba(0,255,200,0.35);color:var(--biolum);background:rgba(0,255,200,0.06);}
+.link-card:hover::after{transform:scaleX(1);}
+.link-icon{font-size:1.3rem;filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(4) brightness(1.1);transition:filter 0.22s,transform 0.22s;}
+.link-card:hover .link-icon{filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(6) brightness(1.3) drop-shadow(0 0 4px var(--biolum));transform:scale(1.1);}
+.link-name{font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;text-align:center;}
+
+/* ── SIDEBAR ── */
+.sidebar{display:flex;flex-direction:column;padding:0 0 18px 18px;border-left:1px solid rgba(0,255,200,0.07);}
+
+/* SONAR */
+.sonar-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.sonar-container{position:relative;width:100%;}
+.sonar-svg{width:100%;height:auto;display:block;}
+#sonar-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+.sonar-ring{fill:none;stroke:var(--biolum-dim);stroke-width:0.5;opacity:0.35;}
+.sonar-cross-line{stroke:var(--biolum-dim);stroke-width:0.3;opacity:0.25;}
+.sonar-static-blip{fill:var(--biolum);filter:drop-shadow(0 0 3px var(--biolum));opacity:0.55;}
+.sonar-blip-alert{fill:var(--alert);filter:drop-shadow(0 0 5px var(--alert));animation:bp 1s ease-in-out infinite;}
+.sonar-blip-steam{fill:var(--steam);filter:drop-shadow(0 0 5px var(--steam));animation:bp 1.4s ease-in-out infinite;}
+.sonar-blip-mal{fill:var(--mal);filter:drop-shadow(0 0 5px var(--mal));animation:bp 0.8s ease-in-out infinite;}
+@keyframes bp{0%,100%{opacity:1}50%{opacity:0.2}}
+.sonar-foot{display:flex;gap:8px;width:100%;align-items:center;}
+.sonar-status-txt{font-size:0.58rem;color:var(--text-dim);letter-spacing:0.12em;flex:1;text-shadow:0 0 8px rgba(138,191,178,0.4);}
+.mute-btn{background:transparent;border:1px solid rgba(0,255,200,0.18);color:var(--text-dim);padding:4px 9px;font-family:'Share Tech Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.mute-btn:hover{border-color:var(--biolum);color:var(--biolum);}
+.mute-btn.muted{border-color:var(--rust);color:var(--rust);}
+.alerts-feed{width:100%;max-height:72px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
+.a-line{font-size:0.56rem;letter-spacing:0.07em;padding:2px 6px;border-left:2px solid;animation:aIn 0.3s ease;}
+@keyframes aIn{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:translateX(0)}}
+.a-steam{color:var(--steam);border-color:var(--steam);background:rgba(79,195,247,0.04);}
+.a-series{color:var(--alert);border-color:var(--alert);background:rgba(255,68,102,0.04);}
+.a-mal{color:var(--mal);border-color:var(--mal);background:rgba(230,57,70,0.04);}
+.a-ok{color:var(--text-dim);border-color:rgba(255,255,255,0.08);}
+
+/* SERIES TRACKER */
+.series-list{display:flex;flex-direction:column;gap:7px;max-height:260px;overflow-y:auto;}
+.s-item{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:6px;padding:9px 11px;border:1px solid rgba(0,255,200,0.09);background:rgba(0,0,0,0.18);position:relative;}
+.s-item.has-alert{border-color:rgba(255,68,102,0.38);}
+.s-item.has-alert::before{content:'◉ NUEVO';position:absolute;top:-7px;right:8px;font-size:0.52rem;color:var(--alert);background:var(--deep);padding:0 4px;letter-spacing:0.1em;}
+.s-title{font-size:0.72rem;color:var(--text-main);text-shadow:0 0 8px rgba(223,245,238,0.35);cursor:pointer;}
+.s-title:hover{color:var(--biolum);}
+.s-ep{font-size:0.6rem;color:var(--text-dim);margin-top:1px;}
+.s-next{font-size:0.52rem;color:var(--amber-dim);margin-top:1px;}
+.s-source{font-size:0.5rem;color:var(--text-dim);opacity:0.5;margin-top:1px;}
+.s-badge{font-size:0.58rem;padding:2px 7px;border:1px solid;letter-spacing:0.08em;white-space:nowrap;cursor:pointer;transition:all 0.2s;}
+.bw{color:var(--biolum);border-color:var(--biolum-dim);background:rgba(0,255,200,0.07);}
+.bp2{color:var(--amber);border-color:var(--amber-dim);background:rgba(232,160,48,0.07);}
+.bd{color:var(--text-dim);border-color:rgba(255,255,255,0.09);}
+.s-del{background:transparent;border:1px solid rgba(255,68,102,0.2);color:rgba(255,68,102,0.4);padding:2px 6px;font-family:'Share Tech Mono',monospace;font-size:0.55rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.s-del:hover{border-color:var(--rust);color:var(--rust);background:rgba(192,57,43,0.08);}
+.s-edit{background:transparent;border:1px solid rgba(0,255,200,0.15);color:rgba(0,255,200,0.4);padding:2px 6px;font-family:'Share Tech Mono',monospace;font-size:0.55rem;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.s-edit:hover{border-color:var(--biolum);color:var(--biolum);background:rgba(0,255,200,0.05);}
+.s-ctrl{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.ctrl-btn{flex:1;min-width:60px;background:transparent;border:1px solid rgba(0,255,200,0.18);color:var(--text-dim);padding:6px 4px;font-family:'Share Tech Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
+.ctrl-btn:hover{border-color:var(--biolum);color:var(--biolum);background:rgba(0,255,200,0.04);}
+
+/* ANIME CALENDAR */
+.cal-grid{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;padding-right:2px;}
+.cal-day{border:1px solid rgba(0,255,200,0.08);overflow:hidden;}
+.cal-day-hdr{display:flex;align-items:center;justify-content:space-between;padding:5px 10px;background:rgba(0,255,200,0.04);cursor:pointer;user-select:none;}
+.cal-day-name{font-size:0.6rem;color:var(--amber);letter-spacing:0.2em;text-shadow:0 0 8px rgba(232,160,48,0.5);}
+.cal-day-name.today-day{color:var(--biolum);text-shadow:0 0 12px var(--biolum),0 0 22px rgba(0,255,200,0.4);}
+.cal-count{font-size:0.55rem;color:var(--text-dim);}
+.cal-entries{padding:6px 8px;display:flex;flex-direction:column;gap:4px;}
+.cal-entry{display:flex;align-items:center;gap:8px;font-size:0.62rem;padding:3px 0;border-bottom:1px solid rgba(0,255,200,0.05);}
+.cal-entry:last-child{border-bottom:none;}
+.cal-entry-time{color:var(--amber-dim);min-width:36px;font-size:0.56rem;}
+.cal-entry-title{color:var(--text-main);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cal-entry-ep{color:var(--text-dim);font-size:0.54rem;white-space:nowrap;}
+.cal-loading{font-size:0.62rem;color:var(--text-dim);padding:8px;text-align:center;letter-spacing:0.15em;}
+.cal-day.collapsed-day .cal-entries{display:none;}
+
+/* STEAM WATCHLIST PANEL */
+.steam-list{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;}
+.steam-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid rgba(79,195,247,0.1);background:rgba(79,195,247,0.02);}
+.steam-item.on-sale{border-color:rgba(79,195,247,0.4);background:rgba(79,195,247,0.06);}
+.steam-item.on-sale::before{content:'◉ OFERTA';position:absolute;font-size:0.5rem;color:var(--steam);}
+.steam-name{font-size:0.68rem;color:var(--text-main);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.steam-price{font-size:0.65rem;color:var(--text-dim);white-space:nowrap;}
+.steam-price.sale{color:var(--steam);text-shadow:0 0 8px rgba(79,195,247,0.5);}
+.steam-release{font-size:0.55rem;color:var(--amber-dim);white-space:nowrap;}
+.steam-ctrl{display:flex;gap:5px;margin-top:8px;}
+
+/* CONFIG / SEÑALES */
+.cfg-row{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
+.cfg-row:last-child{margin-bottom:0;}
+.cfg-lbl{font-size:0.55rem;color:var(--amber-dim);letter-spacing:0.18em;}
+.cfg-lbl a{color:var(--biolum);text-decoration:none;}
+.cfg-inp-row{display:flex;gap:5px;}
+.cfg-inp{flex:1;background:var(--hull);border:1px solid rgba(232,160,48,0.18);color:var(--text-main);font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:5px 9px;outline:none;transition:border-color 0.2s;}
+.cfg-inp:focus{border-color:var(--amber);}
+.cfg-save{background:rgba(232,160,48,0.09);border:1px solid rgba(232,160,48,0.28);color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:0.58rem;padding:5px 9px;cursor:pointer;transition:all 0.2s;letter-spacing:0.1em;white-space:nowrap;}
+.cfg-save:hover{background:rgba(232,160,48,0.18);}
+.cfg-st{font-size:0.58rem;letter-spacing:0.08em;margin-top:2px;}
+.c-ok{color:#4eff91;} .c-no{color:var(--text-dim);}
+
+/* BOTTOM */
+.bottom-bar{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:10px 18px;border-top:1px solid rgba(0,255,200,0.08);font-size:0.58rem;color:var(--text-dim);letter-spacing:0.12em;text-shadow:0 0 8px rgba(138,191,178,0.3);}
+.pulse-dot{width:5px;height:5px;border-radius:50%;background:var(--biolum);box-shadow:0 0 6px var(--biolum);animation:pdot 2s ease-in-out infinite;flex-shrink:0;}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.6)}}
+.mini-gauge{width:60px;height:3px;background:rgba(0,255,200,0.08);overflow:hidden;display:inline-block;vertical-align:middle;}
+.mini-gauge-fill{height:100%;background:var(--biolum);box-shadow:0 0 4px var(--biolum);animation:mga 6s ease-in-out infinite;}
+@keyframes mga{0%,100%{width:72%}50%{width:67%}}
+.sep{color:rgba(0,255,200,0.15);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:2000;display:none;align-items:center;justify-content:center;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--plate);border:1px solid var(--biolum-dim);padding:24px;width:440px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 0 50px rgba(0,255,200,0.08);}
+.modal-ttl{font-size:0.62rem;color:var(--amber);letter-spacing:0.28em;margin-bottom:18px;}
+.m-field{margin-bottom:12px;}
+.m-lbl{display:block;font-size:0.58rem;color:var(--text-dim);letter-spacing:0.18em;margin-bottom:5px;}
+.m-hint{display:block;font-size:0.52rem;color:var(--text-dim);opacity:0.55;margin-top:2px;}
+.m-inp,.m-sel{width:100%;background:var(--hull);border:1px solid rgba(0,255,200,0.18);color:var(--text-main);font-family:'Share Tech Mono',monospace;font-size:0.82rem;padding:9px 11px;outline:none;transition:border-color 0.2s;appearance:none;}
+.m-inp:focus,.m-sel:focus{border-color:var(--biolum);}
+.mal-results{background:var(--hull);border:1px solid rgba(0,255,200,0.15);border-top:none;max-height:140px;overflow-y:auto;display:none;}
+.mal-results.open{display:block;}
+.mal-result-item{padding:7px 11px;cursor:pointer;font-size:0.72rem;color:var(--text-dim);transition:all 0.15s;border-bottom:1px solid rgba(0,255,200,0.05);}
+.mal-result-item:hover{background:rgba(0,255,200,0.06);color:var(--biolum);}
+.mal-result-item small{display:block;font-size:0.56rem;opacity:0.6;margin-top:2px;}
+.m-actions{display:flex;gap:7px;margin-top:18px;}
+.m-btn{flex:1;padding:9px;font-family:'Share Tech Mono',monospace;font-size:0.68rem;letter-spacing:0.18em;cursor:pointer;border:1px solid;transition:all 0.2s;text-transform:uppercase;}
+.m-confirm{background:rgba(0,255,200,0.09);border-color:var(--biolum-dim);color:var(--biolum);}
+.m-confirm:hover{background:rgba(0,255,200,0.18);}
+.m-cancel{background:transparent;border-color:rgba(255,255,255,0.09);color:var(--text-dim);}
+.m-cancel:hover{border-color:var(--rust);color:var(--rust);}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="layout">
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">N<em>A</em>V <small>// NAUTILUS OS v3.1</small></div>
+  <div class="header-gauges">
+    <div class="gauge-item"><span class="gauge-label">PROFUNDIDAD</span><span class="gauge-val" id="g-depth">2.847 km</span></div>
+    <div class="gauge-item"><span class="gauge-label">VELOCIDAD</span><span class="gauge-val" id="g-speed">12.4 kn</span></div>
+    <div class="gauge-item"><span class="gauge-label">ALERTAS</span><span class="gauge-val" id="g-alerts" style="color:var(--text-dim)">0</span></div>
+    <div class="gauge-item"><span class="gauge-label">JIKAN</span><span class="gauge-val" id="g-jikan" style="color:var(--text-dim)">–</span></div>
+    <div class="gauge-item"><span class="gauge-label">REACTOR</span><span class="gauge-val" style="color:#4eff91">NOMINAL</span></div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main-panel">
+
+  <!-- CHRONO -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      <span class="panel-label">CHRONO // TIEMPO NAVAL</span>
+      <span class="panel-toggle"><span class="chevron">▼</span></span>
+    </div>
+    <div class="panel-body"><div class="panel-content clock-block">
+      <div id="clock">00<span class="clock-colon">:</span>00<span class="clock-colon">:</span>00</div>
+      <div><div id="date">-- --- ----</div><div id="day-name">---</div></div>
+    </div></div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      <span class="panel-label">NAVEGACIÓN // BÚSQUEDA</span>
+      <span class="panel-toggle"><span class="chevron">▼</span></span>
+    </div>
+    <div class="panel-body"><div class="panel-content" style="padding-bottom:10px;">
+      <div class="search-wrap">
+        <span class="search-pre">// BUSCAR ›</span>
+        <input type="text" id="search-input" placeholder="trazar ruta de navegación..." autocomplete="off"/>
+        <button id="search-btn" onclick="doSearch()">TRAZAR</button>
+      </div>
+      <div class="engine-row">
+        <button class="eng-btn active" onclick="setEngine('google',this)">GOOGLE</button>
+        <button class="eng-btn" onclick="setEngine('duckduckgo',this)">DUCK</button>
+        <button class="eng-btn" onclick="setEngine('youtube',this)">YOUTUBE</button>
+        <button class="eng-btn" onclick="setEngine('wikipedia',this)">WIKI</button>
+        <button class="eng-btn" onclick="setEngine('mal',this)">MAL</button>
+        <button class="eng-btn" onclick="setEngine('fgo',this)">FGO WIKI</button>
+        <button class="eng-btn" onclick="setEngine('typemoon',this)">TYPE-MOON</button>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- DESTINOS -->
+  <div class="panel" style="flex:1;">
+    <div class="panel-header" onclick="togglePanel(this)">
+      <span class="panel-label">DESTINOS // ACCESOS DIRECTOS</span>
+      <span class="panel-toggle"><span class="chevron">▼</span></span>
+    </div>
+    <div class="panel-body"><div class="panel-content">
+      <div class="links-grid" id="links-grid"></div>
+    </div></div>
+  </div>
+
+</main>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <!-- SONAR -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      <span class="panel-label">SONAR // SECTOR SCAN</span>
+      <span class="panel-toggle"><span class="chevron">▼</span></span>
+    </div>
+    <div class="panel-body"><div class="panel-content" style="padding-bottom:10px;">
+      <div class="sonar-wrap">
+        <div class="sonar-container" id="sonar-container">
+          <svg class="sonar-svg" viewBox="0 0 260 260" id="sonar-svg">
+            <circle cx="130" cy="130" r="110" class="sonar-ring"/>
+            <circle cx="130" cy="130" r="82" class="sonar-ring"/>
+            <circle cx="130" cy="130" r="55" class="sonar-ring"/>
+            <circle cx="130" cy="130" r="27" class="sonar-ring"/>
+            <line x1="20" y1="130" x2="240" y2="130" class="sonar-cross-line"/>
+            <line x1="130" y1="20" x2="130" y2="240" class="sonar-cross-line"/>
+            <line x1="52" y1="52" x2="208" y2="208" class="sonar-cross-line" opacity="0.12"/>
+            <line x1="208" y1="52" x2="52" y2="208" class="sonar-cross-line" opacity="0.12"/>
+            <circle cx="170" cy="95" r="2.5" class="sonar-static-blip"/>
+            <circle cx="95" cy="155" r="2" class="sonar-static-blip"/>
+            <g id="dyn-blips"></g>
+            <circle cx="130" cy="130" r="4" fill="#00ffc8" opacity="0.85"/>
+            <circle cx="130" cy="130" r="2" fill="#fff" opacity="0.7"/>
+            <text x="132" y="21" fill="#00a882" font-size="6.5" font-family="'Share Tech Mono'" opacity="0.55">N</text>
+            <text x="132" y="247" fill="#00a882" font-size="6.5" font-family="'Share Tech Mono'" opacity="0.55">S</text>
+            <text x="244" y="133" fill="#00a882" font-size="6.5" font-family="'Share Tech Mono'" opacity="0.55">E</text>
+            <text x="12" y="133" fill="#00a882" font-size="6.5" font-family="'Share Tech Mono'" opacity="0.55">W</text>
+          </svg>
+          <canvas id="sonar-canvas"></canvas>
+        </div>
+        <div class="sonar-foot">
+          <span class="sonar-status-txt" id="sonar-status">2 CONTACTOS // ACTIVO</span>
+          <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊 SONAR</button>
+        </div>
+        <div class="alerts-feed" id="alerts-feed">
+          <div class="a-line a-ok">[ NAUTILUS NAV v3.1 INICIADO ]</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- BITACORA -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      <span class="panel-label">BITÁCORA // SERIES & ANIME</span>
+      <span class="panel-toggle"><span class="chevron">▼</span></span>
+    </div>
+    <div class="panel-body"><div class="panel-content">
+      <div class="series-list" id="series-list"></div>
+      <div class="s-ctrl">
+        <button class="ctrl-btn" onclick="openModal(null)">+ AGREGAR</button>
+        <button class="ctrl-btn" onclick="importFromMAL()">↓ MAL</button>
+        <button class="ctrl-btn" onclick="manualScan()">⟳ SCAN</button>
+        <button class="ctrl-btn" onclick="clearDone()">✕ FIN</button>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ANIME CALENDAR -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      <span class="panel-label">CALENDARIO // ESTRENOS ANIME</span>
+      <span class="panel-toggle"><span class="chevron">▼</span></span>
+    </div>
+    <div class="panel-body"><div class="panel-content">
+      <div class="cal-grid" id="cal-grid">
+        <div class="cal-loading">[ CARGANDO SEÑAL JIKAN... ]</div>
+      </div>
+      <div style="margin-top:8px;">
+        <button class="ctrl-btn" style="width:100%;" onclick="loadAnimeCalendar(true)">⟳ ACTUALIZAR CALENDARIO</button>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEAM WATCHLIST -->
+  <div class="panel">
+    <div class="panel-header" onclick="togglePanel(this)">
+      <span class="panel-label">STEAM // WISHLIST & RADAR</span>
+      <span class="panel-toggle"><span class="chevron">▼</span></span>
+    </div>
+    <div class="panel-body"><div class="panel-content">
+      <div class="steam-list" id="steam-list">
+        <div class="cal-loading">[ CARGANDO WISHLIST... ]</div>
+      </div>
+      <div class="steam-ctrl">
+        <button class="ctrl-btn" onclick="loadSteamWishlist(true)">⟳ ACTUALIZAR</button>
+        <button class="ctrl-btn" onclick="checkSteamDeals()">🎯 SCAN OFERTAS</button>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- CONFIG -->
+  <div class="panel collapsed">
+    <div class="panel-header" onclick="togglePanel(this)">
+      <span class="panel-label">CONFIG // SEÑALES & CLAVES</span>
+      <span class="panel-toggle"><span class="chevron">▼</span></span>
+    </div>
+    <div class="panel-body"><div class="panel-content">
+      <div class="cfg-row">
+        <span class="cfg-lbl">MAL USERNAME</span>
+        <div class="cfg-inp-row">
+          <input type="text" class="cfg-inp" id="cfg-mal-user" placeholder="tu username de MAL...">
+          <button class="cfg-save" onclick="saveKey('mal-user')">GUARDAR</button>
+        </div>
+        <div class="cfg-st" id="st-mal-user">⬡ <span class="c-no">Ezmakio (default)</span></div>
+      </div>
+      <div class="cfg-row">
+        <span class="cfg-lbl">STEAM ID <span style="color:var(--text-dim);font-size:0.5rem">(número de tu perfil)</span></span>
+        <div class="cfg-inp-row">
+          <input type="text" class="cfg-inp" id="cfg-steam-id" placeholder="ej. 76561199054403613">
+          <button class="cfg-save" onclick="saveKey('steam-id')">GUARDAR</button>
+        </div>
+        <div class="cfg-st" id="st-steam-id">◉ <span class="c-ok">76561199054403613</span></div>
+      </div>
+      <div class="cfg-row">
+        <span class="cfg-lbl">TMDB API KEY &nbsp;<a href="https://www.themoviedb.org/settings/api" target="_blank">[ OBTENER ]</a></span>
+        <div class="cfg-inp-row">
+          <input type="password" class="cfg-inp" id="cfg-tmdb" placeholder="key de TMDB...">
+          <button class="cfg-save" onclick="saveKey('tmdb')">GUARDAR</button>
+        </div>
+        <div class="cfg-st" id="st-tmdb">⬡ <span class="c-no">SIN CONFIGURAR</span></div>
+      </div>
+      <div class="cfg-row">
+        <span class="cfg-lbl">ITAD API KEY &nbsp;<a href="https://isthereanydeal.com/dev/app/" target="_blank">[ OBTENER ]</a></span>
+        <div class="cfg-inp-row">
+          <input type="password" class="cfg-inp" id="cfg-itad" placeholder="key de ITAD...">
+          <button class="cfg-save" onclick="saveKey('itad')">GUARDAR</button>
+        </div>
+        <div class="cfg-st" id="st-itad">⬡ <span class="c-no">SIN CONFIGURAR</span></div>
+      </div>
+      <div class="cfg-row" style="margin-bottom:0">
+        <span class="cfg-lbl">JIKAN (MAL API) — <span style="color:#4eff91">SIN KEY // PÚBLICA</span></span>
+      </div>
+    </div></div>
+  </div>
+
+</aside>
+
+<footer class="bottom-bar">
+  <div class="pulse-dot"></div>
+  <span>NAUTILUS NAV v3.1</span>
+  <span class="sep">//</span>
+  <span>SISTEMA <span class="mini-gauge"><span class="mini-gauge-fill"></span></span></span>
+  <span class="sep">//</span>
+  <span>20.000 LEGUAS</span>
+  <span style="margin-left:auto;color:#4eff91;">◉ EN LÍNEA</span>
+</footer>
+</div>
+
+<!-- MODAL AGREGAR / EDITAR -->
+<div class="modal-ov" id="modal">
+  <div class="modal">
+    <div class="modal-ttl" id="modal-ttl">REGISTRAR ENTRADA EN BITÁCORA</div>
+    <input type="hidden" id="m-edit-idx" value="">
+    <div class="m-field">
+      <label class="m-lbl">BUSCAR EN MYANIMELIST</label>
+      <input type="text" class="m-inp" id="m-mal-search" placeholder="buscar anime en MAL..." autocomplete="off" oninput="malSearchDebounce()">
+      <div class="mal-results" id="mal-results"></div>
+      <span class="m-hint">Escribe para buscar — o rellena manualmente abajo</span>
+    </div>
+    <div class="m-field">
+      <label class="m-lbl">TÍTULO</label>
+      <input type="text" class="m-inp" id="m-title" placeholder="ej. Frieren">
+    </div>
+    <div class="m-field">
+      <label class="m-lbl">EPISODIO ACTUAL</label>
+      <input type="text" class="m-inp" id="m-ep" placeholder="ej. EP 22">
+    </div>
+    <div class="m-field">
+      <label class="m-lbl">TMDB ID <span style="color:var(--text-dim);font-size:0.55rem">(series no-anime, de themoviedb.org)</span></label>
+      <input type="text" class="m-inp" id="m-tmdb-id" placeholder="ej. 95396">
+    </div>
+    <div class="m-field">
+      <label class="m-lbl">ESTADO</label>
+      <select class="m-sel" id="m-status">
+        <option value="watching">VIENDO</option>
+        <option value="pending">PENDIENTE</option>
+        <option value="done">COMPLETADA</option>
+      </select>
+    </div>
+    <div class="m-actions">
+      <button class="m-btn m-confirm" onclick="saveEntry()">GUARDAR</button>
+      <button class="m-btn m-cancel" onclick="closeModal()">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const pad = n => String(n).padStart(2,'0');
+
+// ══ DEFAULTS ══
+const DEFAULT_STEAM_ID = '76561199054403613';
+const DEFAULT_MAL_USER = 'Ezmakio';
+
+function getSteamId(){ return localStorage.getItem('nav-key-steam-id') || DEFAULT_STEAM_ID; }
+function getMalUser(){ return localStorage.getItem('nav-key-mal-user') || DEFAULT_MAL_USER; }
+
+// ══ PANEL COLLAPSE ══
+function togglePanel(hdr){ hdr.closest('.panel').classList.toggle('collapsed'); }
+
+// ══ CLOCK ══
+function updateClock(){
+  const n=new Date();
+  $('clock').innerHTML=`${pad(n.getHours())}<span class="clock-colon">:</span>${pad(n.getMinutes())}<span class="clock-colon">:</span>${pad(n.getSeconds())}`;
+  const days=['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
+  const months=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+  $('date').textContent=`${pad(n.getDate())} ${months[n.getMonth()]} ${n.getFullYear()}`;
+  $('day-name').textContent=days[n.getDay()];
+}
+setInterval(updateClock,1000); updateClock();
+
+// ══ LINKS ══
+const defaultLinks = [
+  {name:'Gmail',url:'https://mail.google.com',icon:'✉️'},
+  {name:'Drive',url:'https://drive.google.com',icon:'🗂️'},
+  {name:'GitHub',url:'https://github.com',icon:'⚙️'},
+  {name:'YouTube',url:'https://youtube.com',icon:'📡'},
+  {name:'MAL',url:'https://myanimelist.net',icon:'🎌'},
+  {name:'Steam',url:'https://store.steampowered.com/wishlist',icon:'🎮'},
+  {name:'Reddit',url:'https://reddit.com',icon:'🔭'},
+  {name:'FGO Wiki',url:'https://fategrandorder.fandom.com/wiki/Fate/Grand_Order_Wikia',icon:'⚔️'},
+  {name:'Type-Moon',url:'https://typemoon.fandom.com/wiki/TYPE-MOON_Wiki',icon:'🌙'},
+  {name:'Maps',url:'https://maps.google.com',icon:'🧭'},
+];
+(function renderLinks(){
+  const links = JSON.parse(localStorage.getItem('nav-links')||'null') || defaultLinks;
+  $('links-grid').innerHTML = links.map(l=>
+    `<a class="link-card" href="${esc(l.url)}" target="_blank">
+      <span class="link-icon">${l.icon}</span>
+      <span class="link-name">${esc(l.name)}</span>
+    </a>`).join('');
+})();
+
+// ══ SEARCH ══
+let curEngine='google';
+const engines={
+  google:'https://www.google.com/search?q=',
+  duckduckgo:'https://duckduckgo.com/?q=',
+  youtube:'https://www.youtube.com/results?search_query=',
+  wikipedia:'https://en.wikipedia.org/w/index.php?search=',
+  mal:'https://myanimelist.net/search/all?q=',
+  fgo:'https://fategrandorder.fandom.com/wiki/Special:Search?query=',
+  typemoon:'https://typemoon.fandom.com/wiki/Special:Search?query='
+};
+function setEngine(name,btn){
+  curEngine=name;
+  document.querySelectorAll('.eng-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function doSearch(){
+  const q=$('search-input').value.trim();
+  if(q) window.open(engines[curEngine]+encodeURIComponent(q),'_blank');
+}
+$('search-input').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+
+// ══ AUDIO — Submarine Reverb ══
+let audioCtx=null, muted=false, reverbNode=null;
+function getCtx(){
+  if(!audioCtx){
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    buildReverb();
+  }
+  return audioCtx;
+}
+function buildReverb(){
+  const ctx=audioCtx, len=ctx.sampleRate*3.5;
+  const buf=ctx.createBuffer(2,len,ctx.sampleRate);
+  for(let c=0;c<2;c++){
+    const ch=buf.getChannelData(c);
+    for(let i=0;i<len;i++){
+      const d=Math.pow(1-i/len,2.2);
+      ch[i]=(Math.random()*2-1)*d*(i<200?i/200:1);
+    }
+  }
+  reverbNode=ctx.createConvolver();
+  reverbNode.buffer=buf;
+  reverbNode.connect(ctx.destination);
+}
+function playTone(freq,vol,dur,type='sine',rev=true,delay=0){
+  if(muted) return;
+  try{
+    const ctx=getCtx(),osc=ctx.createOscillator(),gain=ctx.createGain(),dry=ctx.createGain();
+    osc.type=type;
+    osc.frequency.setValueAtTime(freq,ctx.currentTime+delay);
+    osc.frequency.exponentialRampToValueAtTime(freq*0.35,ctx.currentTime+delay+dur);
+    gain.gain.setValueAtTime(0.001,ctx.currentTime+delay);
+    gain.gain.linearRampToValueAtTime(vol,ctx.currentTime+delay+0.008);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+dur);
+    osc.connect(gain); dry.gain.value=0.35; gain.connect(dry); dry.connect(ctx.destination);
+    if(rev&&reverbNode){ const wet=ctx.createGain(); wet.gain.value=0.65; gain.connect(wet); wet.connect(reverbNode); }
+    osc.start(ctx.currentTime+delay); osc.stop(ctx.currentTime+delay+dur+0.1);
+  }catch(e){}
+}
+function playSweepPing(){ playTone(520,0.06,1.2,'sine',true); setTimeout(()=>playTone(260,0.025,0.8,'sine',true),180); }
+function playAlertPing(){ playTone(1080,0.14,0.3,'sine',false); setTimeout(()=>playTone(780,0.11,0.45,'sine',true),320); }
+function playSteamPing(){ playTone(420,0.1,0.5,'triangle',true); setTimeout(()=>playTone(560,0.08,0.35,'triangle',false),160); }
+function playMalPing(){ playTone(660,0.09,0.4,'sine',true); setTimeout(()=>playTone(880,0.07,0.3,'sine',false),220); }
+function toggleMute(){ muted=!muted; $('mute-btn').textContent=muted?'🔇 SONAR':'🔊 SONAR'; $('mute-btn').classList.toggle('muted',muted); }
+let audioReady=false;
+document.addEventListener('click',()=>{ if(!audioReady){ audioReady=true; getCtx(); setInterval(playSweepPing,4000); } },{once:true});
+
+// ══ PHOSPHOR SONAR ══
+(function initSonar(){
+  const svg=$('sonar-svg'), canvas=$('sonar-canvas'), container=$('sonar-container');
+  let angle=0;
+  const SPEED=(2*Math.PI)/(4*60), TRAIL=Math.PI*0.62;
+  function resize(){ const r=svg.getBoundingClientRect(); canvas.width=r.width; canvas.height=r.height; canvas.style.width=r.width+'px'; canvas.style.height=r.height+'px'; }
+  function draw(){
+    const w=canvas.width,h=canvas.height; if(!w){requestAnimationFrame(draw);return;}
+    const sc=w/260, cx=130*sc, cy=130*sc, r=110*sc;
+    const c=canvas.getContext('2d'); c.clearRect(0,0,w,h);
+    for(let i=0;i<48;i++){
+      const t=i/48, t1=(i+1)/48;
+      const a0=angle-TRAIL*(1-t), a1=angle-TRAIL*(1-t1);
+      const alpha=Math.pow(t,1.4)*0.65, green=Math.floor(190+65*t);
+      c.beginPath(); c.moveTo(cx,cy); c.arc(cx,cy,r,a0,a1,false); c.closePath();
+      c.fillStyle=`rgba(0,${green},${Math.floor(100+155*t)},${alpha})`; c.fill();
+    }
+    const ex=cx+r*Math.cos(angle), ey=cy+r*Math.sin(angle);
+    const g=c.createLinearGradient(cx,cy,ex,ey);
+    g.addColorStop(0,'rgba(0,255,200,0)'); g.addColorStop(0.5,'rgba(0,255,200,0.55)'); g.addColorStop(1,'rgba(0,255,200,1)');
+    c.beginPath(); c.moveTo(cx,cy); c.lineTo(ex,ey);
+    c.strokeStyle=g; c.lineWidth=2*sc; c.shadowBlur=14; c.shadowColor='#00ffc8'; c.stroke(); c.shadowBlur=0;
+    c.beginPath(); c.arc(ex,ey,3*sc,0,Math.PI*2);
+    c.fillStyle='rgba(0,255,200,1)'; c.shadowBlur=12; c.shadowColor='#00ffc8'; c.fill(); c.shadowBlur=0;
+    angle+=SPEED; if(angle>Math.PI*2) angle-=Math.PI*2;
+    requestAnimationFrame(draw);
+  }
+  resize(); new ResizeObserver(resize).observe(container); requestAnimationFrame(draw);
+})();
+
+// ══ ALERTS & BLIPS ══
+let alertTotal=0;
+const blipSlots={
+  series:[{cx:155,cy:172},{cx:100,cy:66},{cx:178,cy:138},{cx:78,cy:170}],
+  steam: [{cx:190,cy:76},{cx:70,cy:104},{cx:198,cy:158},{cx:58,cy:143}],
+  mal:   [{cx:142,cy:60},{cx:62,cy:118},{cx:195,cy:110},{cx:110,cy:190}]
+};
+const blipIdx={series:0,steam:0,mal:0};
+function addAlert(type,msg){
+  const feed=$('alerts-feed'), div=document.createElement('div');
+  div.className=`a-line a-${type}`;
+  const n=new Date(); div.textContent=`[${pad(n.getHours())}:${pad(n.getMinutes())}] ${msg}`;
+  feed.insertBefore(div,feed.firstChild);
+  while(feed.children.length>10) feed.removeChild(feed.lastChild);
+  if(type==='series'||type==='steam'||type==='mal'){
+    alertTotal++; const el=$('g-alerts'); el.textContent=alertTotal; el.style.color='var(--alert)'; el.classList.add('alert-active');
+    if(type==='steam') playSteamPing(); else if(type==='mal') playMalPing(); else playAlertPing();
+    spawnBlip(type);
+  }
+}
+function spawnBlip(type){
+  const g=$('dyn-blips'), slot=blipSlots[type][blipIdx[type]++%blipSlots[type].length];
+  const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('cx',slot.cx); c.setAttribute('cy',slot.cy); c.setAttribute('r','4');
+  c.className.baseVal=type==='steam'?'sonar-blip-steam':type==='mal'?'sonar-blip-mal':'sonar-blip-alert';
+  g.appendChild(c); $('sonar-status').textContent=`${g.children.length+2} CONTACTOS // ACTIVO`;
+  setTimeout(()=>{ if(c.parentNode) c.parentNode.removeChild(c); },90000);
+}
+
+// ══ CONFIG ══
+function saveKey(type){
+  const val=$(`cfg-${type}`).value.trim(); if(!val) return;
+  localStorage.setItem(`nav-key-${type}`,val); $(`cfg-${type}`).value='';
+  refreshConfig(); addAlert('ok',`${type.toUpperCase()} ACTUALIZADO`);
+}
+function refreshConfig(){
+  const tmdb=localStorage.getItem('nav-key-tmdb'), itad=localStorage.getItem('nav-key-itad');
+  const malUser=localStorage.getItem('nav-key-mal-user'), steamId=localStorage.getItem('nav-key-steam-id');
+  $('st-tmdb').innerHTML=tmdb?'◉ <span class="c-ok">ACTIVO</span>':'⬡ <span class="c-no">SIN CONFIGURAR</span>';
+  $('st-itad').innerHTML=itad?'◉ <span class="c-ok">ACTIVO</span>':'⬡ <span class="c-no">SIN CONFIGURAR</span>';
+  $('st-mal-user').innerHTML=`◉ <span class="c-ok">${malUser||DEFAULT_MAL_USER}</span>`;
+  $('st-steam-id').innerHTML=`◉ <span class="c-ok">${steamId||DEFAULT_STEAM_ID}</span>`;
+}
+refreshConfig();
+
+// ══ SERIES TRACKER ══
+const getList=()=>JSON.parse(localStorage.getItem('nav-series')||'[]');
+const saveList=l=>localStorage.setItem('nav-series',JSON.stringify(l));
+
+function renderSeries(){
+  const list=getList(), el=$('series-list');
+  if(!list.length){ el.innerHTML='<div style="color:var(--text-dim);font-size:0.68rem;padding:10px;text-align:center;letter-spacing:0.12em">[ SIN ENTRADAS ]</div>'; return; }
+  el.innerHTML=list.map((s,i)=>`
+    <div class="s-item ${s.newEp?'has-alert':''}">
+      <div style="min-width:0;">
+        <div class="s-title">${esc(s.title)}</div>
+        <div class="s-ep">${esc(s.ep||'—')}</div>
+        ${s.nextAir?`<div class="s-next">Próx → ${esc(s.nextAir)}</div>`:''}
+        ${s.source?`<div class="s-source">${esc(s.source)}</div>`:''}
+      </div>
+      <span class="s-badge ${s.status==='watching'?'bw':s.status==='pending'?'bp2':'bd'}" onclick="cycleStatus(${i})">
+        ${s.status==='watching'?'VIENDO':s.status==='pending'?'PEND.':'FIN'}
+      </span>
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <button class="s-edit" onclick="openModal(${i})">✎</button>
+        <button class="s-del" onclick="deleteEntry(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function cycleStatus(i){
+  const l=getList(), c=['watching','pending','done'];
+  l[i].status=c[(c.indexOf(l[i].status)+1)%3]; l[i].newEp=false;
+  saveList(l); renderSeries();
+}
+function deleteEntry(i){
+  const l=getList(); l.splice(i,1); saveList(l); renderSeries();
+}
+function clearDone(){ saveList(getList().filter(s=>s.status!=='done')); renderSeries(); }
+
+// ── MAL SEARCH ──
+let malTimer=null, selMal=null;
+function malSearchDebounce(){ clearTimeout(malTimer); malTimer=setTimeout(doMalSearch,600); }
+async function doMalSearch(){
+  const q=$('m-mal-search').value.trim(), res=$('mal-results');
+  if(q.length<2){ res.classList.remove('open'); return; }
+  try{
+    res.innerHTML='<div class="mal-result-item">[ BUSCANDO... ]</div>'; res.classList.add('open');
+    const r=await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(q)}&limit=6&sfw=false`);
+    if(!r.ok) throw new Error();
+    const items=(await r.json()).data||[];
+    if(!items.length){ res.innerHTML='<div class="mal-result-item">[ SIN RESULTADOS ]</div>'; return; }
+    res.innerHTML=items.map(a=>
+      `<div class="mal-result-item" onclick="selectMal(${a.mal_id},'${esc(a.title.replace(/'/g,"\\'"))}',${a.episodes||0})">
+        ${esc(a.title)}<small>${a.type||''} · ${a.episodes?a.episodes+' EP':'?'} · ${a.status||''}</small>
+      </div>`).join('');
+  }catch(e){ res.innerHTML='<div class="mal-result-item">[ ERROR JIKAN ]</div>'; }
+}
+function selectMal(id,title,eps){
+  selMal={id,title,eps}; $('m-title').value=title; $('m-mal-search').value=title;
+  $('mal-results').classList.remove('open'); $('m-ep').placeholder=eps?`EP 1 / ${eps}`:'EP 1';
+}
+
+// ── MODAL ──
+function openModal(editIdx){
+  const modal=$('modal'); modal.classList.add('open');
+  selMal=null; ['m-mal-search','m-title','m-ep','m-tmdb-id'].forEach(id=>{ $(id).value=''; });
+  $('mal-results').classList.remove('open');
+  if(editIdx!==null && editIdx!==undefined){
+    const s=getList()[editIdx];
+    $('modal-ttl').textContent='EDITAR ENTRADA';
+    $('m-edit-idx').value=editIdx;
+    $('m-title').value=s.title||'';
+    $('m-ep').value=s.ep||'';
+    $('m-tmdb-id').value=s.tmdbId||'';
+    $('m-status').value=s.status||'watching';
+    if(s.malId) selMal={id:s.malId,title:s.title,eps:s.malEps||0};
+  } else {
+    $('modal-ttl').textContent='REGISTRAR ENTRADA EN BITÁCORA';
+    $('m-edit-idx').value='';
+    $('m-status').value='watching';
+  }
+  setTimeout(()=>$('m-mal-search').focus(),50);
+}
+function closeModal(){
+  $('modal').classList.remove('open'); $('mal-results').classList.remove('open');
+  ['m-mal-search','m-title','m-ep','m-tmdb-id'].forEach(id=>{ $(id).value=''; });
+  $('m-edit-idx').value=''; selMal=null;
+}
+function saveEntry(){
+  const title=$('m-title').value.trim(); if(!title) return;
+  const l=getList(), idx=$('m-edit-idx').value;
+  const entry={ title, ep:$('m-ep').value.trim(), tmdbId:$('m-tmdb-id').value.trim(),
+    malId:selMal?.id||null, malEps:selMal?.eps||null,
+    source:selMal?'MAL':($('m-tmdb-id').value.trim()?'TMDB':'MANUAL'),
+    status:$('m-status').value, newEp:false, nextAir:null };
+  if(idx!=='') { Object.assign(l[parseInt(idx)],entry); }
+  else { l.push(entry); }
+  saveList(l); renderSeries(); closeModal();
+}
+$('modal').addEventListener('click',e=>{ if(e.target===$('modal')) closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+renderSeries();
+
+// ══ MAL IMPORT — Pull watching list from Jikan ══
+async function importFromMAL(){
+  const user=getMalUser();
+  addAlert('ok',`>> IMPORTANDO DE MAL: ${user}...`);
+  try{
+    const res=await fetch(`https://api.jikan.moe/v4/users/${user}/animelist?status=1&limit=25`);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json(), items=data.data||[];
+    if(!items.length){ addAlert('ok','MAL: LISTA VACÍA O PRIVADA'); return; }
+    const l=getList();
+    let added=0;
+    for(const item of items){
+      const malId=item.entry?.mal_id, title=item.entry?.title||'?';
+      if(!malId) continue;
+      const exists=l.find(s=>s.malId===malId);
+      if(!exists){
+        l.push({ title, ep:`EP ${item.episodes_watched||0}`,
+          malId, malEps:item.entry?.episodes||null,
+          source:'MAL', status:'watching', newEp:false, nextAir:null });
+        added++;
+      } else {
+        // Update episode count if changed
+        const epStr=`EP ${item.episodes_watched||0}`;
+        if(exists.ep!==epStr){ exists.ep=epStr; }
+      }
+    }
+    saveList(l); renderSeries();
+    addAlert('mal', added>0?`MAL: +${added} SERIES IMPORTADAS`:`MAL: LISTA SINCRONIZADA (SIN NUEVAS)`);
+  }catch(e){ addAlert('ok',`MAL IMPORT ERROR: ${e.message}`); }
+}
+
+// ══ ANIME CALENDAR ══
+const DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+const DAY_ES=['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
+let calLoaded=false;
+async function loadAnimeCalendar(force=false){
+  if(!force&&calLoaded) return;
+  const grid=$('cal-grid');
+  grid.innerHTML='<div class="cal-loading">[ SINCRONIZANDO JIKAN... ]</div>';
+  try{
+    const schedule={};
+    for(let i=0;i<7;i++){
+      await sleep(380);
+      const r=await fetch(`https://api.jikan.moe/v4/schedules?filter=${DAY_KEYS[i]}&limit=15`);
+      if(!r.ok) throw new Error(`HTTP ${r.status}`);
+      schedule[DAY_KEYS[i]]=(await r.json()).data||[];
+    }
+    calLoaded=true; $('g-jikan').textContent='OK'; $('g-jikan').style.color='#4eff91';
+    renderCalendar(schedule); addAlert('ok','JIKAN: CALENDARIO SINCRONIZADO');
+  }catch(e){
+    $('g-jikan').textContent='ERR'; $('g-jikan').style.color='var(--rust)';
+    grid.innerHTML=`<div class="cal-loading">[ ERROR JIKAN: ${e.message} ]</div>`;
+    setTimeout(()=>loadAnimeCalendar(true),120000);
+  }
+}
+function renderCalendar(schedule){
+  const todayIdx=new Date().getDay(), grid=$('cal-grid');
+  grid.innerHTML='';
+  for(let d=0;d<7;d++){
+    const di=(todayIdx+d)%7, dk=DAY_KEYS[di], entries=schedule[dk]||[], isToday=d===0;
+    const dayDiv=document.createElement('div'); dayDiv.className='cal-day'+(d>2?' collapsed-day':'');
+    const hdr=document.createElement('div'); hdr.className='cal-day-hdr';
+    hdr.onclick=()=>dayDiv.classList.toggle('collapsed-day');
+    hdr.innerHTML=`<span class="cal-day-name ${isToday?'today-day':''}">${isToday?'◉ ':''} ${DAY_ES[di]}</span><span class="cal-count">${entries.length} SERIES</span>`;
+    dayDiv.appendChild(hdr);
+    const eDiv=document.createElement('div'); eDiv.className='cal-entries';
+    eDiv.innerHTML=entries.length
+      ? entries.map(a=>`<div class="cal-entry"><span class="cal-entry-time">${a.broadcast?.time||'??:??'}</span><span class="cal-entry-title" title="${esc(a.title)}">${esc(a.title)}</span><span class="cal-entry-ep">${a.episodes?a.episodes+'EP':'?'}</span></div>`).join('')
+      : '<div style="color:var(--text-dim);font-size:0.58rem;padding:4px 0">[ SIN ESTRENOS ]</div>';
+    dayDiv.appendChild(eDiv); grid.appendChild(dayDiv);
+  }
+}
+
+// ══ JIKAN — CHECK NEW EPISODES ══
+const jikanQueue=[];let jikanRunning=false;
+async function jikanFlush(){ if(jikanRunning||!jikanQueue.length) return; jikanRunning=true; while(jikanQueue.length){ await jikanQueue.shift()(); await sleep(420); } jikanRunning=false; }
+async function checkMalEpisodes(){
+  const list=getList(); let changed=false; const today=new Date().toISOString().split('T')[0];
+  for(let s of list){
+    if(!s.malId||s.status==='done') continue;
+    jikanQueue.push(async()=>{
+      try{
+        const r=await fetch(`https://api.jikan.moe/v4/anime/${s.malId}`); if(!r.ok) return;
+        const d=(await r.json()).data; if(!d) return;
+        if(d.status==='Currently Airing'&&!s.newEp){
+          const er=await fetch(`https://api.jikan.moe/v4/anime/${s.malId}/episodes?page=1`); if(!er.ok) return;
+          const eps=(await er.json()).data||[];
+          if(eps.length){ const last=eps[eps.length-1], air=last.aired?.split('T')[0];
+            if(air&&air<=today&&air>=new Date(Date.now()-7*864e5).toISOString().split('T')[0]){
+              s.newEp=true; changed=true; addAlert('mal',`${s.title.toUpperCase()} EP${last.episode_number||''} DISPONIBLE`);
+            }
+          }
+        }
+      }catch(e){}
+    });
+  }
+  jikanFlush(); if(changed){ saveList(list); renderSeries(); }
+}
+
+// ══ TMDB ══
+async function checkTMDB(){
+  const key=localStorage.getItem('nav-key-tmdb'); if(!key) return;
+  const list=getList(); let changed=false; const today=new Date().toISOString().split('T')[0];
+  for(let s of list){
+    if(!s.tmdbId||s.status==='done') continue;
+    try{
+      const r=await fetch(`https://api.themoviedb.org/3/tv/${s.tmdbId}?api_key=${key}&language=es-MX`); if(!r.ok) continue;
+      const d=await r.json();
+      if(d.next_episode_to_air){ const ne=d.next_episode_to_air; s.nextAir=`T${ne.season_number}E${ne.episode_number} · ${ne.air_date}`; if(ne.air_date<=today&&!s.newEp){s.newEp=true;changed=true;addAlert('series',`${s.title.toUpperCase()} T${ne.season_number}E${ne.episode_number} DISPONIBLE`);} }
+      else if(d.last_episode_to_air){ const le=d.last_episode_to_air; s.nextAir=null; const diff=(Date.now()-new Date(le.air_date))/864e5; if(diff<=7&&!s.newEp&&s.status==='watching'){s.newEp=true;changed=true;addAlert('series',`${s.title.toUpperCase()} T${le.season_number}E${le.episode_number} RECIENTE`);} }
+    }catch(e){}
+    await sleep(400);
+  }
+  if(changed){ saveList(list); renderSeries(); }
+}
+
+// ══ STEAM WISHLIST ══
+// Uses Steam's public wishlist JSON endpoint (no auth needed for public wishlists)
+async function loadSteamWishlist(force=false){
+  const steamId=getSteamId();
+  const el=$('steam-list');
+  el.innerHTML='<div class="cal-loading">[ CARGANDO WISHLIST STEAM... ]</div>';
+  try{
+    // Steam wishlist API - returns JSON for public profiles
+    const url=`https://store.steampowered.com/wishlist/profiles/${steamId}/wishlistdata/?p=0`;
+    const res=await fetch(url);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    const games=Object.entries(data).map(([id,g])=>({
+      id, name:g.name, released:!!g.release_string&&!g.release_string.includes('TBD'),
+      release:g.release_string||'TBD', priority:g.priority||0,
+      capsule:g.capsule
+    })).sort((a,b)=>a.priority-b.priority||a.name.localeCompare(b.name));
+    if(!games.length){ el.innerHTML='<div class="cal-loading">[ WISHLIST VACÍA O PRIVADA ]</div>'; return; }
+    localStorage.setItem('nav-steam-cache', JSON.stringify({ts:Date.now(),games}));
+    renderSteamList(games);
+    addAlert('ok',`STEAM: ${games.length} JUEGOS EN WISHLIST`);
+  }catch(e){
+    // Try cache
+    const cache=JSON.parse(localStorage.getItem('nav-steam-cache')||'null');
+    if(cache){ renderSteamList(cache.games); el.insertAdjacentHTML('beforebegin',''); addAlert('ok','STEAM: USANDO CACHÉ (CORS EN ARCHIVO LOCAL NORMAL)'); }
+    else { el.innerHTML=`<div class="cal-loading">[ STEAM: ${e.message} — ABRE DESDE SERVIDOR LOCAL O NAVEGADOR ]</div>`; }
+  }
+}
+function renderSteamList(games){
+  const el=$('steam-list');
+  const cache=JSON.parse(localStorage.getItem('nav-steam-deals-cache')||'{}');
+  el.innerHTML=games.slice(0,20).map(g=>{
+    const deal=cache[g.id];
+    const onSale=deal&&deal.cut>=30;
+    return `<div class="steam-item ${onSale?'on-sale':''}">
+      <div style="min-width:0;flex:1;">
+        <div class="steam-name" title="${esc(g.name)}">${esc(g.name)}</div>
+        <div class="steam-release">${esc(g.release)}</div>
+      </div>
+      ${onSale?`<div class="steam-price sale">−${deal.cut}% $${deal.price}</div>`:''}
+      <a href="https://store.steampowered.com/app/${g.id}" target="_blank" style="color:var(--steam);font-size:0.55rem;text-decoration:none;border:1px solid rgba(79,195,247,0.2);padding:2px 6px;white-space:nowrap;">VER</a>
+    </div>`;
+  }).join('');
+}
+
+async function checkSteamDeals(){
+  const key=localStorage.getItem('nav-key-itad'); if(!key){ addAlert('ok','ITAD: CONFIGURA TU KEY'); return; }
+  try{
+    const res=await fetch(`https://api.isthereanydeal.com/deals/v2?key=${key}&shops=61&limit=10&sort=-cut`,{headers:{'Accept':'application/json'}});
+    if(!res.ok){ addAlert('ok','ITAD: SIN RESPUESTA'); return; }
+    const data=await res.json(), deals=(data.list||[]).filter(d=>(d.cut||0)>=30);
+    if(!deals.length){ addAlert('ok','STEAM: SIN OFERTAS ≥30% AHORA'); return; }
+    for(const deal of deals.slice(0,3)){
+      const cut=Math.round(deal.cut||0), price=deal.price?.amount!=null?`$${deal.price.amount.toFixed(2)}`:'';
+      addAlert('steam',`${deal.title} −${cut}% ${price}`);
+    }
+    if(deals.length>3) addAlert('steam',`+${deals.length-3} OFERTAS MÁS`);
+  }catch(e){ addAlert('ok','ITAD: ERROR'); }
+}
+
+// ══ MANUAL SCAN ══
+async function manualScan(){
+  addAlert('ok','>> SCAN COMPLETO INICIADO...');
+  await checkTMDB(); await checkSteamDeals(); await checkMalEpisodes();
+  addAlert('ok','>> SCAN COMPLETADO');
+}
+
+// ══ AUTO INIT ══
+setTimeout(()=>{ loadAnimeCalendar(); loadSteamWishlist(); checkTMDB(); }, 5000);
+setInterval(()=>{ checkTMDB(); checkSteamDeals(); checkMalEpisodes(); },30*60*1000);
+setInterval(()=>loadAnimeCalendar(true),6*60*60*1000);
+
+// ══ GAUGES ══
+let dep=2847; setInterval(()=>{ dep+=(Math.random()-.5)*3; $('g-depth').textContent=(dep/1000).toFixed(3)+' km'; },3200);
+let spd=12.4; setInterval(()=>{ spd=Math.max(10,Math.min(15,spd+(Math.random()-.5)*.2)); $('g-speed').textContent=spd.toFixed(1)+' kn'; },2100);
+</script>
+</body>
+</html>
