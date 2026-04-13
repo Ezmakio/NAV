@@ -879,7 +879,7 @@ async function importFromMAL(){
   addAlert('ok',`>> IMPORTANDO DE MAL: ${user}...`);
   try{
     // v4 correct endpoint
-    const res=await fetch(`https://api.jikan.moe/v4/users/${encodeURIComponent(user)}/animelist?status=1&limit=25`);
+    const res=await fetch(`https://api.jikan.moe/v4/users/${encodeURIComponent(user)}/animelist?status=watching&limit=25`);
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data=await res.json(),items=data.data||[];
     if(!items.length){ addAlert('ok','MAL: LISTA VACÍA O PRIVADA'); return; }
