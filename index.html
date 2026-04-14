@@ -7,11 +7,12 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23030a0e'/%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%2300ffc8' stroke-width='1'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2300a882' stroke-width='0.6' opacity='0.6'/%3E%3Ccircle cx='16' cy='16' r='5' fill='none' stroke='%2300a882' stroke-width='0.6' opacity='0.4'/%3E%3Cline x1='3' y1='16' x2='29' y2='16' stroke='%2300a882' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='16' y1='3' x2='16' y2='29' stroke='%2300a882' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='16' y1='16' x2='29' y2='16' stroke='%2300ffc8' stroke-width='1.5' opacity='0.9'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 16 16' to='360 16 16' dur='4s' repeatCount='indefinite'/%3E%3C/line%3E%3Ccircle cx='16' cy='16' r='1.5' fill='%2300ffc8'/%3E%3Ccircle cx='22' cy='10' r='1.2' fill='%2300ffc8' opacity='0.8'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;600&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
+/* ═══ VARIABLES ═══ */
 :root {
   --deep:#030a0e; --hull:#0a1520; --plate:#0d1e2c;
   --biolum:#00ffc8; --biolum-dim:#00a882;
-  --amber:#e8a030; --amber-dim:#a06820;
-  --rust:#c0392b; --alert:#ff4466; --steam:#4fc3f7; --mal:#e63946;
+  --amber:#e8a030; --amber-dim:#a06820; --amber-faint:rgba(232,160,48,0.08);
+  --steam:#4fc3f7; --mal:#e63946;
   --glass:rgba(0,255,200,0.04); --text-main:#dff5ee; --text-dim:#8abfb2;
   --pt:0.35s cubic-bezier(0.4,0,0.2,1);
 }
@@ -25,7 +26,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 60%,transparent 55%,rgba(0,0,0,0.28) 100%);pointer-events:none;z-index:999;}
 .noise{position:fixed;inset:0;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:998;}
 
-/* ── FIRST-RUN OVERLAY ── */
+/* ═══ FIRST-RUN ═══ */
 .setup-ov{position:fixed;inset:0;background:rgba(3,10,14,0.97);z-index:3000;display:flex;align-items:center;justify-content:center;}
 .setup-ov.hidden{display:none;}
 .setup-box{border:1px solid var(--biolum-dim);padding:36px 40px;width:420px;background:var(--plate);box-shadow:0 0 60px rgba(0,255,200,0.1);}
@@ -36,12 +37,12 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .setup-inp:focus{border-color:var(--biolum);}
 .setup-hint{font-size:0.55rem;color:var(--text-dim);opacity:0.6;letter-spacing:0.1em;margin-bottom:20px;}
 .setup-btn{width:100%;background:rgba(0,255,200,0.1);border:1px solid var(--biolum-dim);color:var(--biolum);font-family:'Share Tech Mono',monospace;font-size:0.75rem;letter-spacing:0.3em;padding:12px;cursor:pointer;transition:all 0.2s;}
-.setup-btn:hover{background:rgba(0,255,200,0.2);text-shadow:0 0 10px var(--biolum);}
+.setup-btn:hover{background:rgba(0,255,200,0.2);}
 
-/* ── LAYOUT ── */
-.layout{display:grid;grid-template-columns:1fr 380px;grid-template-rows:auto 1fr auto;min-height:100vh;padding:18px;gap:0;position:relative;z-index:1;}
+/* ═══ LAYOUT ═══ */
+.layout{display:grid;grid-template-columns:1fr 380px;grid-template-rows:auto 1fr auto;min-height:100vh;padding:18px;position:relative;z-index:1;}
 
-/* ── HEADER ── */
+/* ═══ HEADER ═══ */
 .header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--biolum-dim);margin-bottom:18px;position:relative;}
 .header::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:var(--biolum);opacity:0.25;filter:blur(3px);}
 .logo{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:600;color:var(--biolum);letter-spacing:0.4em;text-shadow:0 0 14px var(--biolum),0 0 30px rgba(0,255,200,0.5);animation:glow-pulse 4s ease-in-out infinite;}
@@ -52,62 +53,84 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .gauge-item{display:flex;flex-direction:column;align-items:center;gap:2px;}
 .gauge-label{font-size:0.55rem;color:var(--amber);letter-spacing:0.2em;text-shadow:0 0 8px rgba(232,160,48,0.6);}
 .gauge-val{font-size:0.8rem;color:var(--biolum);letter-spacing:0.05em;text-shadow:0 0 10px var(--biolum),0 0 22px rgba(0,255,200,0.55);}
-.gauge-val.alert-active{color:var(--alert);animation:flicker 1.5s ease-in-out infinite;}
+.gauge-val.alert-on{color:var(--amber);animation:flicker 1.5s ease-in-out infinite;text-shadow:0 0 10px var(--amber);}
 @keyframes flicker{0%,100%{opacity:1}50%{opacity:0.5}}
 
-/* ── PANELS ── */
-.panel{border:1px solid rgba(0,255,200,0.12);background:var(--glass);position:relative;margin-bottom:16px;}
+/* ═══ PANELS ═══ */
+.panel{border:1px solid rgba(0,255,200,0.12);background:var(--glass);margin-bottom:16px;}
 .panel:last-child{margin-bottom:0;}
 .panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1px solid transparent;transition:border-color 0.2s,background 0.2s;}
 .panel-header:hover{background:rgba(0,255,200,0.03);border-bottom-color:rgba(0,255,200,0.08);}
 .panel-label{font-size:0.6rem;color:var(--amber-dim);letter-spacing:0.25em;text-transform:uppercase;text-shadow:0 0 10px rgba(232,160,48,0.55);}
 .panel-toggle{font-size:0.65rem;color:var(--text-dim);display:flex;align-items:center;gap:6px;}
-.panel-toggle .chevron{display:inline-block;transition:transform var(--pt);}
+.chevron{display:inline-block;transition:transform var(--pt);}
 .panel.collapsed .chevron{transform:rotate(-90deg);}
 .panel-body{overflow:hidden;transition:max-height var(--pt),opacity var(--pt);max-height:2000px;opacity:1;}
 .panel.collapsed .panel-body{max-height:0;opacity:0;}
 .panel-content{padding:14px;}
 
-/* ── MAIN ── */
+/* ═══ MAIN ═══ */
 .main-panel{display:flex;flex-direction:column;padding:0 18px 18px 0;}
 
-/* CLOCK + TIMER */
-.chrono-block{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;gap:24px;flex-wrap:wrap;}
+/* CHRONO */
+.chrono-block{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;gap:16px;flex-wrap:wrap;}
 .clock-group{display:flex;align-items:baseline;gap:14px;}
 #clock{font-size:2.8rem;color:var(--biolum);text-shadow:0 0 12px var(--biolum),0 0 28px rgba(0,255,200,0.6);letter-spacing:0.08em;line-height:1;}
 .clock-colon{animation:blink 1s step-end infinite;}
 @keyframes blink{50%{opacity:0}}
 #date{font-size:0.88rem;color:var(--amber);letter-spacing:0.12em;font-family:'Special Elite',cursive;text-shadow:0 0 10px rgba(232,160,48,0.6);}
-#day-name{font-size:0.6rem;color:var(--text-dim);letter-spacing:0.3em;margin-top:3px;text-shadow:0 0 8px rgba(138,191,178,0.45);}
-/* Timer */
+#day-name{font-size:0.6rem;color:var(--text-dim);letter-spacing:0.3em;margin-top:3px;}
+/* TEMPORIZADOR */
 .stopwatch{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
 .sw-label{font-size:0.46rem;color:var(--amber-dim);letter-spacing:0.28em;text-transform:uppercase;}
-#sw-display{font-size:1.9rem;color:var(--biolum);text-shadow:0 0 10px var(--biolum),0 0 24px rgba(0,255,200,0.4);letter-spacing:0.12em;font-variant-numeric:tabular-nums;line-height:1;}
-#sw-display.sw-running{color:#4eff91;text-shadow:0 0 10px #4eff91,0 0 24px rgba(78,255,145,0.4);}
-#sw-display.sw-done{color:var(--alert);text-shadow:0 0 12px var(--alert);animation:flicker 0.6s ease-in-out infinite;}
+#sw-display{font-size:1.85rem;color:var(--biolum);text-shadow:0 0 10px var(--biolum),0 0 24px rgba(0,255,200,0.35);letter-spacing:0.12em;font-variant-numeric:tabular-nums;line-height:1;}
+#sw-display.sw-running{color:#4eff91;text-shadow:0 0 10px #4eff91,0 0 24px rgba(78,255,145,0.35);}
+#sw-display.sw-done{color:#ff4466;text-shadow:0 0 14px #ff4466;animation:flicker 0.6s ease-in-out infinite;}
 .timer-set-row{display:flex;gap:3px;align-items:center;}
-.timer-inp{width:30px;background:transparent;border:none;border-bottom:1px solid rgba(0,255,200,0.18);color:var(--biolum);font-family:'Share Tech Mono',monospace;font-size:0.7rem;padding:1px 3px;outline:none;text-align:center;transition:border-color 0.2s;}
+.timer-inp{width:30px;background:transparent;border:none;border-bottom:1px solid rgba(0,255,200,0.2);color:var(--biolum);font-family:'Share Tech Mono',monospace;font-size:0.7rem;padding:1px 3px;outline:none;text-align:center;transition:border-color 0.2s;}
 .timer-inp:focus{border-bottom-color:var(--biolum);}
-.timer-sep{color:var(--biolum-dim);font-size:0.75rem;opacity:0.55;}
+.timer-sep{color:var(--biolum-dim);font-size:0.75rem;opacity:0.5;}
 .timer-preset-row{display:flex;gap:2px;}
-.timer-preset{background:transparent;border:1px solid rgba(0,255,200,0.07);color:var(--text-dim);padding:2px 6px;font-family:'Share Tech Mono',monospace;font-size:0.49rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;}
+.timer-preset{background:transparent;border:1px solid rgba(0,255,200,0.08);color:var(--text-dim);padding:2px 6px;font-family:'Share Tech Mono',monospace;font-size:0.49rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;}
 .timer-preset:hover{border-color:var(--biolum-dim);color:var(--biolum);}
 .sw-btns{display:flex;gap:3px;}
 .sw-btn{background:transparent;border:1px solid rgba(0,255,200,0.12);color:var(--text-dim);padding:3px 9px;font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .sw-btn:hover{border-color:var(--biolum);color:var(--biolum);}
 .sw-btn.active{border-color:#4eff91;color:#4eff91;}
+/* EDITOR DE DESTINOS */
+.links-edit-bar{display:flex;justify-content:flex-end;margin-bottom:8px;}
+.links-edit-btn{background:transparent;border:1px solid rgba(0,255,200,0.14);color:var(--text-dim);padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;cursor:pointer;transition:all 0.2s;}
+.links-edit-btn:hover{border-color:var(--biolum);color:var(--biolum);}
+.led-modal{background:var(--plate);border:1px solid var(--biolum-dim);padding:22px;width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 0 50px rgba(0,255,200,0.08);}
+.led-title{font-size:0.6rem;color:var(--amber);letter-spacing:0.28em;margin-bottom:16px;}
+.led-list{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.led-row{display:grid;grid-template-columns:auto 1fr 1fr auto;gap:6px;align-items:center;padding:7px 9px;border:1px solid rgba(0,255,200,0.07);background:rgba(0,255,200,0.01);}
+.led-icon-wrap{position:relative;}
+.led-icon-btn{background:var(--hull);border:1px solid rgba(0,255,200,0.15);font-size:1.05rem;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s;filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(4) brightness(1.1);}
+.led-icon-btn:hover{border-color:var(--biolum);filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(6) brightness(1.3);}
+.icon-picker{position:absolute;top:calc(100% + 4px);left:0;background:var(--plate);border:1px solid var(--biolum-dim);padding:7px;display:none;z-index:600;width:196px;flex-wrap:wrap;gap:3px;box-shadow:0 0 20px rgba(0,0,0,0.7);}
+.icon-picker.open{display:flex;}
+.icon-opt{font-size:1.15rem;cursor:pointer;padding:3px 4px;border:1px solid transparent;transition:all 0.15s;filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(4) brightness(1.1);}
+.icon-opt:hover{border-color:var(--biolum);background:rgba(0,255,200,0.07);filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(6) brightness(1.4);}
+.led-inp{background:var(--hull);border:1px solid rgba(0,255,200,0.13);color:var(--text-main);font-family:'Share Tech Mono',monospace;font-size:0.63rem;padding:6px 7px;outline:none;width:100%;transition:border-color 0.2s;}
+.led-inp:focus{border-color:var(--biolum);}
+.led-del{background:transparent;border:1px solid rgba(255,68,102,0.18);color:rgba(255,68,102,0.38);width:28px;height:28px;font-size:0.7rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+.led-del:hover{border-color:#c0392b;color:#c0392b;}
+.led-add-btn{width:100%;background:rgba(0,255,200,0.03);border:1px dashed rgba(0,255,200,0.18);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;padding:8px;cursor:pointer;transition:all 0.2s;}
+.led-add-btn:hover{border-color:var(--biolum);color:var(--biolum);}
+.led-actions{display:flex;gap:7px;margin-top:12px;}
 
 /* SEARCH */
-.search-wrap{display:flex;border:1px solid rgba(0,255,200,0.25);background:var(--hull);overflow:hidden;transition:border-color 0.3s,box-shadow 0.3s;}
+.search-wrap{display:flex;border:1px solid rgba(0,255,200,0.25);background:var(--hull);overflow:hidden;transition:border-color 0.3s;}
 .search-wrap:focus-within{border-color:var(--biolum);box-shadow:0 0 18px rgba(0,255,200,0.08);}
 .search-pre{padding:13px 14px;color:var(--amber);font-size:0.88rem;border-right:1px solid rgba(0,255,200,0.12);white-space:nowrap;text-shadow:0 0 12px rgba(232,160,48,0.65);}
 #search-input{flex:1;background:transparent;border:none;outline:none;color:var(--text-main);font-family:'Share Tech Mono',monospace;font-size:0.95rem;padding:13px 14px;caret-color:var(--biolum);}
 #search-input::placeholder{color:var(--text-dim);opacity:0.55;}
-#search-btn{background:rgba(0,255,200,0.06);border:none;border-left:1px solid rgba(0,255,200,0.12);color:var(--biolum);padding:13px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;transition:all 0.2s;text-shadow:0 0 8px rgba(0,255,200,0.5);}
-#search-btn:hover{background:rgba(0,255,200,0.13);text-shadow:0 0 14px var(--biolum);}
+#search-btn{background:rgba(0,255,200,0.06);border:none;border-left:1px solid rgba(0,255,200,0.12);color:var(--biolum);padding:13px 18px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;transition:all 0.2s;}
+#search-btn:hover{background:rgba(0,255,200,0.13);}
 .engine-row{display:flex;flex-wrap:wrap;margin-top:5px;}
 .eng-btn{background:transparent;border:1px solid rgba(0,255,200,0.08);color:var(--text-dim);padding:5px 10px;font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;cursor:pointer;transition:all 0.2s;margin-right:-1px;white-space:nowrap;}
-.eng-btn.active,.eng-btn:hover{background:rgba(0,255,200,0.07);color:var(--biolum);border-color:rgba(0,255,200,0.28);z-index:1;text-shadow:0 0 8px var(--biolum);}
+.eng-btn.active,.eng-btn:hover{background:rgba(0,255,200,0.07);color:var(--biolum);border-color:rgba(0,255,200,0.28);z-index:1;}
 
 /* LINKS */
 .links-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
@@ -119,7 +142,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .link-card:hover .link-icon{filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(6) brightness(1.3) drop-shadow(0 0 4px var(--biolum));transform:scale(1.1);}
 .link-name{font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;text-align:center;}
 
-/* ── SIDEBAR ── */
+/* ═══ SIDEBAR ═══ */
 .sidebar{display:flex;flex-direction:column;padding:0 0 18px 18px;border-left:1px solid rgba(0,255,200,0.07);}
 
 /* SONAR */
@@ -130,58 +153,62 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sonar-ring{fill:none;stroke:var(--biolum-dim);stroke-width:0.5;opacity:0.35;}
 .sonar-cross-line{stroke:var(--biolum-dim);stroke-width:0.3;opacity:0.25;}
 .sonar-static-blip{fill:var(--biolum);filter:drop-shadow(0 0 3px var(--biolum));opacity:0.55;}
-.sonar-blip-alert{fill:var(--alert);filter:drop-shadow(0 0 5px var(--alert));animation:bp 1s ease-in-out infinite;}
+/* 1. ALL alert blips now amber/orange — no more red */
+.sonar-blip-alert{fill:var(--amber);filter:drop-shadow(0 0 5px var(--amber));animation:bp 1s ease-in-out infinite;}
 .sonar-blip-steam{fill:var(--steam);filter:drop-shadow(0 0 5px var(--steam));animation:bp 1.4s ease-in-out infinite;}
-.sonar-blip-mal{fill:var(--mal);filter:drop-shadow(0 0 5px var(--mal));animation:bp 0.8s ease-in-out infinite;}
+.sonar-blip-mal{fill:var(--amber);filter:drop-shadow(0 0 5px var(--amber));animation:bp 0.9s ease-in-out infinite;}
 @keyframes bp{0%,100%{opacity:1}50%{opacity:0.2}}
 .sonar-foot{display:flex;gap:8px;width:100%;align-items:center;}
-.sonar-status-txt{font-size:0.58rem;color:var(--text-dim);letter-spacing:0.12em;flex:1;text-shadow:0 0 8px rgba(138,191,178,0.4);}
+.sonar-status-txt{font-size:0.58rem;color:var(--text-dim);letter-spacing:0.12em;flex:1;}
 .mute-btn{background:transparent;border:1px solid rgba(0,255,200,0.18);color:var(--text-dim);padding:4px 9px;font-family:'Share Tech Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .mute-btn:hover{border-color:var(--biolum);color:var(--biolum);}
-.mute-btn.muted{border-color:var(--rust);color:var(--rust);}
+.mute-btn.muted{border-color:var(--amber);color:var(--amber);}
 .alerts-feed{width:100%;max-height:72px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
 .a-line{font-size:0.56rem;letter-spacing:0.07em;padding:2px 6px;border-left:2px solid;animation:aIn 0.3s ease;}
 @keyframes aIn{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:translateX(0)}}
 .a-steam{color:var(--steam);border-color:var(--steam);background:rgba(79,195,247,0.04);}
-.a-series{color:var(--alert);border-color:var(--alert);background:rgba(255,68,102,0.04);}
-.a-mal{color:var(--mal);border-color:var(--mal);background:rgba(230,57,70,0.04);}
+/* Orange for all series/anime alerts */
+.a-series{color:var(--amber);border-color:var(--amber);background:var(--amber-faint);}
+.a-mal{color:var(--amber);border-color:var(--amber);background:var(--amber-faint);}
 .a-ok{color:var(--text-dim);border-color:rgba(255,255,255,0.08);}
 
-/* SERIES */
+/* SERIES LIST */
 .series-list{display:flex;flex-direction:column;gap:7px;max-height:280px;overflow-y:auto;padding-right:2px;}
 .s-item{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:6px;padding:8px 10px;border:1px solid rgba(0,255,200,0.09);background:rgba(0,0,0,0.18);position:relative;}
-.s-item.has-alert{border-color:rgba(255,68,102,0.38);}
-.s-item.has-alert::before{content:'◉ NUEVO';position:absolute;top:-7px;right:8px;font-size:0.52rem;color:var(--alert);background:var(--deep);padding:0 4px;letter-spacing:0.1em;}
+/* Orange alert border — no red */
+.s-item.has-alert{border-color:rgba(232,160,48,0.5);}
+.s-item.has-alert::before{content:'◉ NUEVO EP';position:absolute;top:-7px;right:8px;font-size:0.52rem;color:var(--amber);background:var(--deep);padding:0 4px;letter-spacing:0.1em;text-shadow:0 0 8px var(--amber);}
 .s-title{font-size:0.72rem;color:var(--text-main);text-shadow:0 0 8px rgba(223,245,238,0.35);}
-/* Episode counter with +/- */
 .s-ep-row{display:flex;align-items:center;gap:4px;margin-top:2px;}
-.s-ep{font-size:0.6rem;color:var(--text-dim);min-width:40px;}
-.ep-btn{background:transparent;border:1px solid rgba(0,255,200,0.15);color:var(--text-dim);width:16px;height:16px;font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;line-height:1;padding:0;}
+.s-ep{font-size:0.6rem;color:var(--text-dim);min-width:44px;}
+.ep-btn{background:transparent;border:1px solid rgba(0,255,200,0.18);color:var(--text-dim);width:16px;height:16px;font-size:0.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;padding:0;line-height:1;}
 .ep-btn:hover{border-color:var(--biolum);color:var(--biolum);background:rgba(0,255,200,0.06);}
 .s-next{font-size:0.52rem;color:var(--amber-dim);margin-top:1px;}
 .s-source{font-size:0.5rem;color:var(--text-dim);opacity:0.5;margin-top:1px;}
 .s-badge{font-size:0.58rem;padding:2px 7px;border:1px solid;letter-spacing:0.08em;white-space:nowrap;cursor:pointer;transition:all 0.2s;align-self:start;}
 .bw{color:var(--biolum);border-color:var(--biolum-dim);background:rgba(0,255,200,0.07);}
-.bp2{color:var(--amber);border-color:var(--amber-dim);background:rgba(232,160,48,0.07);}
+.bp2{color:var(--amber);border-color:var(--amber-dim);background:var(--amber-faint);}
 .bd{color:var(--text-dim);border-color:rgba(255,255,255,0.09);}
 .s-actions{display:flex;flex-direction:column;gap:3px;}
-.s-del{background:transparent;border:1px solid rgba(255,68,102,0.2);color:rgba(255,68,102,0.4);padding:2px 6px;font-family:'Share Tech Mono',monospace;font-size:0.55rem;cursor:pointer;transition:all 0.2s;}
-.s-del:hover{border-color:var(--rust);color:var(--rust);background:rgba(192,57,43,0.08);}
-.s-edit{background:transparent;border:1px solid rgba(0,255,200,0.15);color:rgba(0,255,200,0.4);padding:2px 6px;font-family:'Share Tech Mono',monospace;font-size:0.55rem;cursor:pointer;transition:all 0.2s;}
+/* 1. Edit/Delete — orange, visible base */
+.s-del{background:transparent;border:1px solid rgba(232,160,48,0.35);color:rgba(232,160,48,0.65);padding:2px 6px;font-family:'Share Tech Mono',monospace;font-size:0.55rem;cursor:pointer;transition:all 0.2s;}
+.s-del:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-faint);}
+.s-edit{background:transparent;border:1px solid rgba(0,255,200,0.2);color:rgba(0,255,200,0.55);padding:2px 6px;font-family:'Share Tech Mono',monospace;font-size:0.55rem;cursor:pointer;transition:all 0.2s;}
 .s-edit:hover{border-color:var(--biolum);color:var(--biolum);background:rgba(0,255,200,0.05);}
 .s-ctrl{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
 .ctrl-btn{flex:1;min-width:56px;background:transparent;border:1px solid rgba(0,255,200,0.18);color:var(--text-dim);padding:6px 4px;font-family:'Share Tech Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
 .ctrl-btn:hover{border-color:var(--biolum);color:var(--biolum);background:rgba(0,255,200,0.04);}
 
-/* CALENDAR — own scrollbar */
-.cal-grid{display:flex;flex-direction:column;gap:5px;max-height:300px;overflow-y:scroll;overflow-x:hidden;padding-right:4px;}
-.cal-grid::-webkit-scrollbar{width:5px;}
-.cal-grid::-webkit-scrollbar-track{background:rgba(0,255,200,0.03);border-radius:2px;}
-.cal-grid::-webkit-scrollbar-thumb{background:var(--biolum-dim);border-radius:2px;}
-.cal-day{border:1px solid rgba(0,255,200,0.08);overflow:hidden;}
+/* 4. CALENDAR — fixed height, own scrollbar */
+.cal-outer{height:300px;overflow-y:auto;overflow-x:hidden;padding-right:4px;}
+.cal-outer::-webkit-scrollbar{width:5px;}
+.cal-outer::-webkit-scrollbar-track{background:rgba(0,255,200,0.03);}
+.cal-outer::-webkit-scrollbar-thumb{background:var(--biolum-dim);border-radius:2px;}
+.cal-grid{display:flex;flex-direction:column;gap:5px;}
+.cal-day{border:1px solid rgba(0,255,200,0.08);}
 .cal-day-hdr{display:flex;align-items:center;justify-content:space-between;padding:5px 10px;background:rgba(0,255,200,0.04);cursor:pointer;user-select:none;}
 .cal-day-name{font-size:0.6rem;color:var(--amber);letter-spacing:0.2em;text-shadow:0 0 8px rgba(232,160,48,0.5);}
-.cal-day-name.today-day{color:var(--biolum);text-shadow:0 0 12px var(--biolum),0 0 22px rgba(0,255,200,0.4);}
+.cal-day-name.today-day{color:var(--biolum);text-shadow:0 0 12px var(--biolum);}
 .cal-count{font-size:0.55rem;color:var(--text-dim);}
 .cal-entries{padding:5px 8px;display:flex;flex-direction:column;gap:3px;}
 .cal-entry{display:flex;align-items:center;gap:6px;font-size:0.6rem;padding:2px 0;border-bottom:1px solid rgba(0,255,200,0.05);}
@@ -191,41 +218,30 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .cal-entry-ep{color:var(--text-dim);font-size:0.52rem;white-space:nowrap;flex-shrink:0;}
 .cal-loading{font-size:0.62rem;color:var(--text-dim);padding:8px;text-align:center;letter-spacing:0.15em;}
 .cal-day.collapsed-day .cal-entries{display:none;}
-.cal-cache-note{font-size:0.52rem;color:var(--text-dim);opacity:0.6;text-align:center;padding:4px 0;letter-spacing:0.1em;}
+.cal-note{font-size:0.52rem;color:var(--text-dim);opacity:0.6;text-align:center;padding:4px 0;}
 
-/* STEAM */
-.steam-list{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto;padding-right:2px;}
+/* STEAM TRACKER */
+.steam-search-row{display:flex;gap:5px;margin-bottom:8px;}
+.steam-search-inp{flex:1;background:var(--hull);border:1px solid rgba(79,195,247,0.18);color:var(--text-main);font-family:'Share Tech Mono',monospace;font-size:0.72rem;padding:6px 10px;outline:none;transition:border-color 0.2s;}
+.steam-search-inp:focus{border-color:var(--steam);}
+.steam-search-btn{background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.28);color:var(--steam);font-family:'Share Tech Mono',monospace;font-size:0.6rem;padding:6px 10px;cursor:pointer;letter-spacing:0.1em;transition:all 0.2s;white-space:nowrap;}
+.steam-search-btn:hover{background:rgba(79,195,247,0.16);}
+.steam-results{background:var(--hull);border:1px solid rgba(79,195,247,0.15);border-top:none;max-height:120px;overflow-y:auto;display:none;}
+.steam-results.open{display:block;}
+.steam-result-item{padding:6px 10px;cursor:pointer;font-size:0.68rem;color:var(--text-dim);border-bottom:1px solid rgba(79,195,247,0.06);transition:all 0.15s;}
+.steam-result-item:hover{background:rgba(79,195,247,0.07);color:var(--steam);}
+.steam-result-item small{display:block;font-size:0.54rem;opacity:0.6;margin-top:1px;}
+.steam-list{display:flex;flex-direction:column;gap:5px;max-height:180px;overflow-y:auto;padding-right:2px;}
 .steam-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid rgba(79,195,247,0.1);background:rgba(79,195,247,0.02);}
 .steam-item.on-sale{border-color:rgba(79,195,247,0.4);background:rgba(79,195,247,0.06);}
 .steam-name{font-size:0.66rem;color:var(--text-main);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.steam-release{font-size:0.52rem;color:var(--amber-dim);}
-.steam-price-sale{font-size:0.62rem;color:var(--steam);text-shadow:0 0 8px rgba(79,195,247,0.5);white-space:nowrap;}
+.steam-price{font-size:0.62rem;color:var(--text-dim);white-space:nowrap;}
+.steam-price.sale{color:var(--steam);text-shadow:0 0 8px rgba(79,195,247,0.5);}
 .steam-link{color:var(--steam);font-size:0.52rem;text-decoration:none;border:1px solid rgba(79,195,247,0.2);padding:2px 5px;white-space:nowrap;transition:all 0.2s;}
 .steam-link:hover{background:rgba(79,195,247,0.1);}
+.steam-del{background:transparent;border:1px solid rgba(232,160,48,0.3);color:rgba(232,160,48,0.55);padding:2px 5px;font-family:'Share Tech Mono',monospace;font-size:0.52rem;cursor:pointer;transition:all 0.2s;}
+.steam-del:hover{border-color:var(--amber);color:var(--amber);}
 .steam-ctrl{display:flex;gap:5px;margin-top:8px;}
-
-/* LINKS EDITOR */
-.links-edit-bar{display:flex;justify-content:flex-end;margin-bottom:8px;}
-.links-edit-btn{background:transparent;border:1px solid rgba(0,255,200,0.18);color:var(--text-dim);padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;cursor:pointer;transition:all 0.2s;}
-.links-edit-btn:hover{border-color:var(--biolum);color:var(--biolum);}
-.link-editor-modal{background:var(--plate);border:1px solid var(--biolum-dim);padding:22px;width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 0 50px rgba(0,255,200,0.08);}
-.led-title{font-size:0.6rem;color:var(--amber);letter-spacing:0.28em;margin-bottom:16px;}
-.led-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.led-row{display:grid;grid-template-columns:auto 1fr 1fr auto;gap:6px;align-items:center;padding:8px;border:1px solid rgba(0,255,200,0.08);background:rgba(0,255,200,0.02);}
-.led-icon-pick{position:relative;}
-.led-icon-btn{background:var(--hull);border:1px solid rgba(0,255,200,0.18);font-size:1.1rem;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s;filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(4) brightness(1.1);}
-.led-icon-btn:hover{border-color:var(--biolum);filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(6) brightness(1.3);}
-.icon-picker{position:absolute;top:calc(100% + 4px);left:0;background:var(--plate);border:1px solid var(--biolum-dim);padding:8px;display:none;z-index:500;width:186px;flex-wrap:wrap;gap:4px;}
-.icon-picker.open{display:flex;}
-.icon-opt{font-size:1.2rem;cursor:pointer;padding:4px;border:1px solid transparent;transition:all 0.15s;border-radius:2px;filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(4) brightness(1.1);}
-.icon-opt:hover{border-color:var(--biolum);background:rgba(0,255,200,0.08);filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(6) brightness(1.3) drop-shadow(0 0 4px var(--biolum));}
-.led-inp{background:var(--hull);border:1px solid rgba(0,255,200,0.15);color:var(--text-main);font-family:'Share Tech Mono',monospace;font-size:0.65rem;padding:6px 8px;outline:none;width:100%;transition:border-color 0.2s;}
-.led-inp:focus{border-color:var(--biolum);}
-.led-del{background:transparent;border:1px solid rgba(255,68,102,0.2);color:rgba(255,68,102,0.4);width:28px;height:28px;font-family:'Share Tech Mono',monospace;font-size:0.7rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
-.led-del:hover{border-color:var(--rust);color:var(--rust);}
-.led-add-btn{width:100%;background:rgba(0,255,200,0.05);border:1px dashed rgba(0,255,200,0.2);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;padding:8px;cursor:pointer;transition:all 0.2s;}
-.led-add-btn:hover{border-color:var(--biolum);color:var(--biolum);background:rgba(0,255,200,0.08);}
-.led-actions{display:flex;gap:7px;margin-top:14px;}
 
 /* CONFIG */
 .cfg-row{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
@@ -233,15 +249,15 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .cfg-lbl{font-size:0.55rem;color:var(--amber-dim);letter-spacing:0.18em;}
 .cfg-lbl a{color:var(--biolum);text-decoration:none;}
 .cfg-inp-row{display:flex;gap:5px;}
-.cfg-inp{flex:1;background:var(--hull);border:1px solid rgba(232,160,48,0.18);color:var(--text-main);font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:5px 9px;outline:none;transition:border-color 0.2s;}
+.cfg-inp{flex:1;background:var(--hull);border:1px solid rgba(232,160,48,0.18);color:var(--text-main);font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:5px 9px;outline:none;}
 .cfg-inp:focus{border-color:var(--amber);}
-.cfg-save{background:rgba(232,160,48,0.09);border:1px solid rgba(232,160,48,0.28);color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:0.58rem;padding:5px 9px;cursor:pointer;transition:all 0.2s;letter-spacing:0.1em;white-space:nowrap;}
+.cfg-save{background:rgba(232,160,48,0.09);border:1px solid rgba(232,160,48,0.28);color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:0.58rem;padding:5px 9px;cursor:pointer;letter-spacing:0.1em;white-space:nowrap;}
 .cfg-save:hover{background:rgba(232,160,48,0.18);}
 .cfg-st{font-size:0.58rem;letter-spacing:0.08em;margin-top:2px;}
 .c-ok{color:#4eff91;} .c-no{color:var(--text-dim);}
 
 /* BOTTOM */
-.bottom-bar{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:10px 18px;border-top:1px solid rgba(0,255,200,0.08);font-size:0.58rem;color:var(--text-dim);letter-spacing:0.12em;text-shadow:0 0 8px rgba(138,191,178,0.3);}
+.bottom-bar{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:10px 18px;border-top:1px solid rgba(0,255,200,0.08);font-size:0.58rem;color:var(--text-dim);letter-spacing:0.12em;}
 .pulse-dot{width:5px;height:5px;border-radius:50%;background:var(--biolum);box-shadow:0 0 6px var(--biolum);animation:pdot 2s ease-in-out infinite;flex-shrink:0;}
 @keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.6)}}
 .mini-gauge{width:60px;height:3px;background:rgba(0,255,200,0.08);overflow:hidden;display:inline-block;vertical-align:middle;}
@@ -268,8 +284,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .m-btn{flex:1;padding:9px;font-family:'Share Tech Mono',monospace;font-size:0.68rem;letter-spacing:0.18em;cursor:pointer;border:1px solid;transition:all 0.2s;text-transform:uppercase;}
 .m-confirm{background:rgba(0,255,200,0.09);border-color:var(--biolum-dim);color:var(--biolum);}
 .m-confirm:hover{background:rgba(0,255,200,0.18);}
-.m-cancel{background:transparent;border-color:rgba(255,255,255,0.09);color:var(--text-dim);}
-.m-cancel:hover{border-color:var(--rust);color:var(--rust);}
+.m-cancel{background:transparent;border-color:rgba(232,160,48,0.25);color:var(--amber-dim);}
+.m-cancel:hover{border-color:var(--amber);color:var(--amber);}
 </style>
 </head>
 <body>
@@ -282,10 +298,10 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     <div class="setup-sub">NAUTILUS ANALYSIS VESSEL — CONFIGURACIÓN INICIAL</div>
     <label class="setup-lbl">USUARIO DE MYANIMELIST</label>
     <input type="text" class="setup-inp" id="setup-mal" placeholder="tu username de MAL..." autocomplete="off">
-    <div class="setup-hint">Usado para importar tu lista de anime. Puedes cambiarlo después en CONFIG.</div>
+    <div class="setup-hint">Para importar tu lista. Puedes cambiarlo después en CONFIG.</div>
     <label class="setup-lbl" style="margin-top:12px;">STEAM ID <span style="opacity:0.5;font-size:0.5rem">(número — opcional)</span></label>
     <input type="text" class="setup-inp" id="setup-steam" placeholder="ej. 76561199054403613" autocomplete="off">
-    <div class="setup-hint">Tu Steam ID para cargar la wishlist. Déjalo vacío si no usas Steam.</div>
+    <div class="setup-hint" style="margin-bottom:20px;">Para la wishlist de Steam. Puedes dejarlo vacío.</div>
     <button class="setup-btn" onclick="completeSetup()">▶ INICIAR SISTEMA</button>
   </div>
 </div>
@@ -294,9 +310,9 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 <!-- HEADER -->
 <header class="header">
-  <div class="logo">N<em>A</em>V <small>// NAUTILUS OS v4</small></div>
+  <div class="logo">N<em>A</em>V <small>// NAUTILUS OS v5</small></div>
   <div class="header-gauges">
-    <div class="gauge-item"><span class="gauge-label">PROFUNDIDAD</span><span class="gauge-val" id="g-depth">10.000 lg</span></div>
+    <div class="gauge-item"><span class="gauge-label">PROFUNDIDAD</span><span class="gauge-val" id="g-depth">20.000 lg</span></div>
     <div class="gauge-item"><span class="gauge-label">VELOCIDAD</span><span class="gauge-val" id="g-speed">12.4 kn</span></div>
     <div class="gauge-item"><span class="gauge-label">ALERTAS</span><span class="gauge-val" id="g-alerts" style="color:var(--text-dim)">0</span></div>
     <div class="gauge-item"><span class="gauge-label">JIKAN</span><span class="gauge-val" id="g-jikan" style="color:var(--text-dim)">–</span></div>
@@ -307,7 +323,6 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 <!-- MAIN -->
 <main class="main-panel">
 
-  <!-- CHRONO + STOPWATCH -->
   <div class="panel">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">CHRONO // TIEMPO NAVAL</span>
@@ -327,14 +342,14 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
           <input type="number" class="timer-inp" id="timer-sec" min="0" max="59" value="0" title="Segundos">
         </div>
         <div class="timer-preset-row">
+          <button class="timer-preset" onclick="timerPreset(0,30)">30s</button>
           <button class="timer-preset" onclick="timerPreset(1,0)">1m</button>
           <button class="timer-preset" onclick="timerPreset(5,0)">5m</button>
           <button class="timer-preset" onclick="timerPreset(10,0)">10m</button>
           <button class="timer-preset" onclick="timerPreset(25,0)">25m</button>
-          <button class="timer-preset" onclick="timerPreset(0,30)">30s</button>
         </div>
         <div class="sw-btns">
-          <button class="sw-btn" id="sw-start" onclick="swStart()">INICIAR</button>
+          <button class="sw-btn" id="sw-start-btn" onclick="swStart()">INICIAR</button>
           <button class="sw-btn" onclick="swStop()">PAUSA</button>
           <button class="sw-btn" onclick="swReset()">RESET</button>
         </div>
@@ -342,7 +357,6 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     </div></div>
   </div>
 
-  <!-- SEARCH -->
   <div class="panel">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">NAVEGACIÓN // BÚSQUEDA</span>
@@ -366,14 +380,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     </div></div>
   </div>
 
-  <!-- DESTINOS -->
   <div class="panel" style="flex:1;">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">DESTINOS // ACCESOS DIRECTOS</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
     </div>
     <div class="panel-body"><div class="panel-content">
-      <div class="links-edit-bar"><button class="links-edit-btn" onclick="openLinksEditor()">✎ EDITAR DESTINOS</button></div>
+      <div class="links-edit-bar"><button class="links-edit-btn" onclick="openLED()">✎ EDITAR</button></div>
       <div class="links-grid" id="links-grid"></div>
     </div></div>
   </div>
@@ -418,7 +431,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
           <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊 SONAR</button>
         </div>
         <div class="alerts-feed" id="alerts-feed">
-          <div class="a-line a-ok">[ NAUTILUS NAV v4 INICIADO ]</div>
+          <div class="a-line a-ok">[ NAUTILUS NAV v5 — INICIANDO... ]</div>
         </div>
       </div>
     </div></div>
@@ -448,29 +461,36 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <span class="panel-toggle"><span class="chevron">▼</span></span>
     </div>
     <div class="panel-body"><div class="panel-content">
-      <div class="cal-grid" id="cal-grid">
-        <div class="cal-loading">[ CARGANDO... ]</div>
+      <!-- 4. Fixed height wrapper with independent scroll -->
+      <div class="cal-outer" id="cal-outer">
+        <div class="cal-grid" id="cal-grid">
+          <div class="cal-loading">[ CARGANDO... ]</div>
+        </div>
       </div>
-      <div style="margin-top:8px;display:flex;gap:5px;">
-        <button class="ctrl-btn" style="flex:1;" onclick="loadAnimeCalendar(true)">⟳ FORZAR ACTUALIZACIÓN</button>
+      <div class="cal-note" id="cal-note"></div>
+      <div style="margin-top:6px;">
+        <button class="ctrl-btn" style="width:100%;" onclick="loadAnimeCalendar(true)">⟳ FORZAR ACTUALIZACIÓN</button>
       </div>
-      <div class="cal-cache-note" id="cal-cache-note"></div>
     </div></div>
   </div>
 
-  <!-- STEAM -->
+  <!-- STEAM TRACKER -->
   <div class="panel">
     <div class="panel-header" onclick="togglePanel(this)">
-      <span class="panel-label">STEAM // WISHLIST & RADAR</span>
+      <span class="panel-label">STEAM // RASTREADOR DE JUEGOS</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
     </div>
     <div class="panel-body"><div class="panel-content">
+      <div class="steam-search-row">
+        <input type="text" class="steam-search-inp" id="steam-search-inp" placeholder="buscar juego en Steam..." autocomplete="off" oninput="steamSearchDebounce()">
+        <button class="steam-search-btn" onclick="steamSearch()">BUSCAR</button>
+      </div>
+      <div class="steam-results" id="steam-results"></div>
       <div class="steam-list" id="steam-list">
-        <div class="cal-loading">[ CARGANDO WISHLIST... ]</div>
+        <div class="cal-loading">[ SIN JUEGOS RASTREADOS ]</div>
       </div>
       <div class="steam-ctrl">
-        <button class="ctrl-btn" onclick="loadSteamWishlist(true)">⟳ ACTUALIZAR</button>
-        <button class="ctrl-btn" onclick="checkSteamDeals()">🎯 OFERTAS</button>
+        <button class="ctrl-btn" onclick="refreshSteamPrices()">⟳ ACTUALIZAR PRECIOS</button>
       </div>
     </div></div>
   </div>
@@ -485,18 +505,10 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <div class="cfg-row">
         <span class="cfg-lbl">MAL USERNAME</span>
         <div class="cfg-inp-row">
-          <input type="text" class="cfg-inp" id="cfg-mal-user" placeholder="tu username de MAL...">
+          <input type="text" class="cfg-inp" id="cfg-mal-user" placeholder="username de MAL...">
           <button class="cfg-save" onclick="saveKey('mal-user')">GUARDAR</button>
         </div>
         <div class="cfg-st" id="st-mal-user">⬡ <span class="c-no">NO CONFIGURADO</span></div>
-      </div>
-      <div class="cfg-row">
-        <span class="cfg-lbl">STEAM ID</span>
-        <div class="cfg-inp-row">
-          <input type="text" class="cfg-inp" id="cfg-steam-id" placeholder="ej. 76561199054403613">
-          <button class="cfg-save" onclick="saveKey('steam-id')">GUARDAR</button>
-        </div>
-        <div class="cfg-st" id="st-steam-id">⬡ <span class="c-no">NO CONFIGURADO</span></div>
       </div>
       <div class="cfg-row">
         <span class="cfg-lbl">TMDB API KEY &nbsp;<a href="https://www.themoviedb.org/settings/api" target="_blank">[ OBTENER ]</a></span>
@@ -506,16 +518,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
         </div>
         <div class="cfg-st" id="st-tmdb">⬡ <span class="c-no">SIN CONFIGURAR</span></div>
       </div>
-      <div class="cfg-row">
-        <span class="cfg-lbl">ITAD API KEY &nbsp;<a href="https://isthereanydeal.com/dev/app/" target="_blank">[ OBTENER ]</a></span>
-        <div class="cfg-inp-row">
-          <input type="password" class="cfg-inp" id="cfg-itad" placeholder="key de ITAD...">
-          <button class="cfg-save" onclick="saveKey('itad')">GUARDAR</button>
-        </div>
-        <div class="cfg-st" id="st-itad">⬡ <span class="c-no">SIN CONFIGURAR</span></div>
-      </div>
       <div class="cfg-row" style="margin-bottom:0">
-        <span class="cfg-lbl">JIKAN (MAL) — <span style="color:#4eff91">PÚBLICA // SIN KEY</span></span>
+        <span class="cfg-lbl">JIKAN / MAL — <span style="color:#4eff91">PÚBLICA</span> &nbsp;·&nbsp; STEAM API — <span style="color:#4eff91">PÚBLICA</span></span>
       </div>
     </div></div>
   </div>
@@ -524,7 +528,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 <footer class="bottom-bar">
   <div class="pulse-dot"></div>
-  <span>NAUTILUS NAV v4.0</span>
+  <span>NAUTILUS NAV v5.0</span>
   <span class="sep">//</span>
   <span>SISTEMA <span class="mini-gauge"><span class="mini-gauge-fill"></span></span></span>
   <span class="sep">//</span>
@@ -533,7 +537,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 </footer>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL SERIE -->
 <div class="modal-ov" id="modal">
   <div class="modal">
     <div class="modal-ttl" id="modal-ttl">REGISTRAR ENTRADA</div>
@@ -542,7 +546,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <label class="m-lbl">BUSCAR EN MAL</label>
       <input type="text" class="m-inp" id="m-mal-search" placeholder="buscar anime..." autocomplete="off" oninput="malSearchDebounce()">
       <div class="mal-results" id="mal-results"></div>
-      <span class="m-hint">Escribe para buscar en MAL — o rellena manualmente abajo</span>
+      <span class="m-hint">Escribe para buscar — o rellena manualmente abajo</span>
     </div>
     <div class="m-field">
       <label class="m-lbl">TÍTULO</label>
@@ -554,7 +558,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     </div>
     <div class="m-field">
       <label class="m-lbl">TMDB ID <span style="color:var(--text-dim);font-size:0.52rem">(series no-anime)</span></label>
-      <input type="text" class="m-inp" id="m-tmdb-id" placeholder="ej. 95396 — de themoviedb.org">
+      <input type="text" class="m-inp" id="m-tmdb-id" placeholder="ej. 95396">
     </div>
     <div class="m-field">
       <label class="m-lbl">ESTADO</label>
@@ -574,52 +578,38 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const pad = n => String(n).padStart(2,'0');
-const today = () => new Date().toISOString().split('T')[0];
+const todayStr = () => new Date().toISOString().split('T')[0];
 
-// ═══════════════════════════════════════════════════════
-//  1. FIRST-RUN PROFILE SETUP
-// ═══════════════════════════════════════════════════════
+// ══ ALLORIGINS PROXY ══
+const proxy = url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+
+// ══ FIRST-RUN ══
 function getMalUser(){ return (localStorage.getItem('nav-key-mal-user')||'').trim(); }
-function getSteamId(){ return (localStorage.getItem('nav-key-steam-id')||'').trim(); }
 
 function checkFirstRun(){
-  if(!getMalUser()){
-    $('setup-ov').classList.remove('hidden');
-    setTimeout(()=>$('setup-mal').focus(), 100);
-  }
+  if(!getMalUser()){ $('setup-ov').classList.remove('hidden'); setTimeout(()=>$('setup-mal').focus(),100); }
 }
-
 function completeSetup(){
-  const mal = $('setup-mal').value.trim();
-  const steam = $('setup-steam').value.trim();
-  if(!mal){ $('setup-mal').style.borderColor='var(--alert)'; return; }
-  localStorage.setItem('nav-key-mal-user', mal);
-  if(steam) localStorage.setItem('nav-key-steam-id', steam);
+  const mal=$('setup-mal').value.trim();
+  if(!mal){ $('setup-mal').style.borderColor='var(--amber)'; return; }
+  localStorage.setItem('nav-key-mal-user',mal);
+  const steam=$('setup-steam').value.trim();
+  if(steam) localStorage.setItem('nav-key-steam-id',steam);
   $('setup-ov').classList.add('hidden');
-  refreshConfig();
-  addAlert('ok', `PERFIL ESTABLECIDO: ${mal}`);
-  setTimeout(()=>{ loadAnimeCalendar(); loadSteamWishlist(); }, 800);
+  refreshConfig(); addAlert('ok',`PERFIL: ${mal}`);
+  setTimeout(bootScan, 600);
 }
-
-// Enter key on setup
-document.addEventListener('DOMContentLoaded', ()=>{
-  $('setup-steam').addEventListener('keydown', e=>{ if(e.key==='Enter') completeSetup(); });
-  $('setup-mal').addEventListener('keydown', e=>{ if(e.key==='Enter') $('setup-steam').focus(); });
-});
-
+$('setup-steam').addEventListener('keydown',e=>{ if(e.key==='Enter') completeSetup(); });
+$('setup-mal').addEventListener('keydown',e=>{ if(e.key==='Enter') $('setup-steam').focus(); });
 checkFirstRun();
 
-// ═══════════════════════════════════════════════════════
-//  PANEL TOGGLE
-// ═══════════════════════════════════════════════════════
+// ══ PANEL TOGGLE ══
 function togglePanel(hdr){ hdr.closest('.panel').classList.toggle('collapsed'); }
 
-// ═══════════════════════════════════════════════════════
-//  CLOCK
-// ═══════════════════════════════════════════════════════
+// ══ CLOCK ══
 function updateClock(){
   const n=new Date();
   $('clock').innerHTML=`${pad(n.getHours())}<span class="clock-colon">:</span>${pad(n.getMinutes())}<span class="clock-colon">:</span>${pad(n.getSeconds())}`;
@@ -630,348 +620,176 @@ function updateClock(){
 }
 setInterval(updateClock,1000); updateClock();
 
-// ═══════════════════════════════════════════════════════
-//  3. COUNTDOWN TIMER — persistent via localStorage
-// ═══════════════════════════════════════════════════════
+// ══ TEMPORIZADOR ══
 let swTimer=null;
+let swState={remaining:0,running:false,done:false};
 
 function timerPreset(m,s){
   swStop();
-  $('timer-min').value=m;
-  $('timer-sec').value=s;
-  const total=(m*60+s)*1000;
-  localStorage.setItem('nav-timer-set',JSON.stringify({min:m,sec:s}));
-  timerState={running:false,remaining:total,startedAt:null,done:false};
-  timerSave(timerState); timerRender();
+  $('timer-min').value=m; $('timer-sec').value=s;
+  localStorage.setItem('nav-timer-set',JSON.stringify({m,s}));
+  swState={remaining:(m*60+s)*1000,running:false,done:false};
+  swSave(); swRender();
 }
-
-function timerLoad(){
-  const saved=JSON.parse(localStorage.getItem('nav-timer-set')||'{"min":5,"sec":0}');
-  $('timer-min').value=saved.min||5;
-  $('timer-sec').value=saved.sec||0;
-  const s=JSON.parse(localStorage.getItem('nav-timer')||'null');
-  if(!s) return {running:false,remaining:(saved.min*60+(saved.sec||0))*1000,startedAt:null,done:false};
-  if(s.running && s.startedAt){
-    s.remaining=Math.max(0,s.remaining-(Date.now()-s.startedAt));
-    s.startedAt=Date.now();
-    if(s.remaining<=0){s.running=false;s.done=true;}
-  }
-  return s;
+function swLoad(){
+  const set=JSON.parse(localStorage.getItem('nav-timer-set')||'{"m":5,"s":0}');
+  $('timer-min').value=set.m; $('timer-sec').value=set.s;
+  const saved=JSON.parse(localStorage.getItem('nav-timer-state')||'null');
+  if(saved&&saved.running&&saved.ts){ saved.remaining=Math.max(0,saved.remaining-(Date.now()-saved.ts)); if(saved.remaining<=0){saved.running=false;saved.done=true;} }
+  return saved||{remaining:(set.m*60+set.s)*1000,running:false,done:false};
 }
-function timerSave(s){ localStorage.setItem('nav-timer',JSON.stringify(s)); }
-
-let timerState=timerLoad();
-
-function timerRender(){
-  const ms=timerState.running ? Math.max(0,timerState.remaining-(Date.now()-timerState.startedAt)) : timerState.remaining;
-  const m=Math.floor(ms/60000), s=Math.floor((ms%60000)/1000);
-  const el=$('sw-display');
-  el.textContent=`${pad(m)}:${pad(s)}`;
-  el.className=timerState.done?'sw-done':(timerState.running?'sw-running':'');
-  $('sw-start').textContent=timerState.running?'PAUSA':'INICIAR';
-  $('sw-start').classList.toggle('active',timerState.running);
+function swSave(){ localStorage.setItem('nav-timer-state',JSON.stringify({...swState,ts:Date.now()})); }
+function swRender(){
+  const ms=swState.remaining, m=Math.floor(ms/60000), s=Math.floor((ms%60000)/1000);
+  const el=$('sw-display'); el.textContent=`${pad(m)}:${pad(s)}`;
+  el.className=swState.done?'sw-done':(swState.running?'sw-running':'');
+  $('sw-start-btn').classList.toggle('active',swState.running);
+  $('sw-start-btn').textContent=swState.running?'EN CURSO':'INICIAR';
 }
-
 function swStart(){
-  if(timerState.done){ swReset(); return; }
-  if(timerState.running){
-    timerState.remaining=Math.max(0,timerState.remaining-(Date.now()-timerState.startedAt));
-    timerState.startedAt=null; timerState.running=false;
-    clearInterval(swTimer); swTimer=null;
-  } else {
-    // If at full time, read inputs
-    const m=parseInt($('timer-min').value)||0, s=parseInt($('timer-sec').value)||0;
-    const total=(m*60+s)*1000;
-    if(timerState.remaining<=0||timerState.remaining===total) timerState.remaining=total;
-    if(timerState.remaining<=0) return;
-    localStorage.setItem('nav-timer-set',JSON.stringify({min:m,sec:s}));
-    timerState.startedAt=Date.now(); timerState.running=true; timerState.done=false;
-    swTimer=setInterval(()=>{
-      const rem=timerState.remaining-(Date.now()-timerState.startedAt);
-      if(rem<=0){
-        timerState.remaining=0; timerState.running=false; timerState.done=true;
-        timerState.startedAt=null; clearInterval(swTimer); swTimer=null;
-        timerSave(timerState); timerRender();
-        playAlertPing(); setTimeout(playAlertPing,600); setTimeout(playAlertPing,1200);
-        addAlert('ok','⏱ TEMPORIZADOR: TIEMPO COMPLETADO');
-        return;
-      }
-      timerRender();
-    },500);
-  }
-  timerSave(timerState); timerRender();
+  if(swState.running) return;
+  if(swState.done) swReset();
+  const m=parseInt($('timer-min').value)||0, s=parseInt($('timer-sec').value)||0;
+  if(swState.remaining<=0) swState.remaining=(m*60+s)*1000;
+  if(swState.remaining<=0) return;
+  localStorage.setItem('nav-timer-set',JSON.stringify({m,s}));
+  swState.running=true; swState.done=false; swSave(); swRender();
+  swTimer=setInterval(()=>{
+    swState.remaining=Math.max(0,swState.remaining-500);
+    if(swState.remaining<=0){
+      swState.running=false; swState.done=true;
+      clearInterval(swTimer); swTimer=null;
+      swSave(); swRender();
+      playAlertPing(); setTimeout(playAlertPing,600); setTimeout(playAlertPing,1200);
+      addAlert('ok','⏱ TEMPORIZADOR: TIEMPO COMPLETADO');
+      return;
+    }
+    swSave(); swRender();
+  },500);
 }
 function swStop(){
-  if(timerState.running){ timerState.remaining=Math.max(0,timerState.remaining-(Date.now()-timerState.startedAt)); }
-  timerState.running=false; timerState.startedAt=null;
   clearInterval(swTimer); swTimer=null;
-  timerSave(timerState); timerRender();
+  swState.running=false; swSave(); swRender();
 }
 function swReset(){
   swStop();
   const m=parseInt($('timer-min').value)||0, s=parseInt($('timer-sec').value)||0;
-  timerState={running:false,remaining:(m*60+s)*1000,startedAt:null,done:false};
-  timerSave(timerState); timerRender();
+  swState={remaining:(m*60+s)*1000,running:false,done:false};
+  swSave(); swRender();
 }
+swState=swLoad();
+if(swState.running){ swState.running=false; swStart(); }
+else swRender();
 
-// Resume if was running
-if(timerState.running){ swTimer=setInterval(()=>{
-  const rem=timerState.remaining-(Date.now()-timerState.startedAt);
-  if(rem<=0){ timerState.remaining=0;timerState.running=false;timerState.done=true;timerState.startedAt=null;clearInterval(swTimer);swTimer=null;timerSave(timerState);timerRender();playAlertPing();addAlert('ok','⏱ TEMPORIZADOR: TIEMPO COMPLETADO'); return; }
-  timerRender();
-},500); }
-timerRender();
-
-// ═══════════════════════════════════════════════════════
-//  LINKS
-// ═══════════════════════════════════════════════════════
+// ══ LINKS ══
 const defaultLinks=[
   {name:'Gmail',url:'https://mail.google.com',icon:'✉️'},
   {name:'Drive',url:'https://drive.google.com',icon:'🗂️'},
   {name:'GitHub',url:'https://github.com',icon:'⚙️'},
   {name:'YouTube',url:'https://youtube.com',icon:'📡'},
   {name:'MAL',url:'https://myanimelist.net',icon:'🎌'},
-  {name:'Steam',url:'https://store.steampowered.com/wishlist',icon:'🎮'},
+  {name:'Steam',url:'https://store.steampowered.com',icon:'🎮'},
   {name:'Reddit',url:'https://reddit.com',icon:'🔭'},
   {name:'FGO Wiki',url:'https://fategrandorder.fandom.com/wiki/Fate/Grand_Order_Wikia',icon:'⚔️'},
   {name:'Type-Moon',url:'https://typemoon.fandom.com/wiki/TYPE-MOON_Wiki',icon:'🌙'},
   {name:'Maps',url:'https://maps.google.com',icon:'🧭'},
 ];
-
-// Icon palette — 7 categories × ~7 icons
-const iconPalette=[
-  '✉️','📬','📮','📩','📨','📤','📥',
-  '🗂️','📁','📂','🗃️','📋','📊','📈',
-  '⚙️','🔧','🛠️','🔩','⚒️','🔨','🪛',
-  '📡','📺','🎥','🎬','▶️','🔴','📻',
-  '🎌','🎎','⛩️','🏯','🎋','🎏','🎐',
-  '🎮','🕹️','👾','🎲','🃏','♟️','🏆',
-  '🔭','🌐','🌍','🗺️','🧭','🪐','⭐',
-  '⚔️','🗡️','🛡️','🏹','🪃','🔱','⚜️',
-  '🌙','🌟','✨','💫','🌠','🌌','🔮',
-  '🧭','🗺️','📍','🚀','🛸','✈️','⚓',
-  '💻','🖥️','⌨️','🖱️','💾','📱','🔋',
-  '🎵','🎶','🎸','🎹','🥁','🎺','🎻',
-  '📚','📖','📝','✏️','🖊️','📰','📜',
-  '🛒','💳','💰','🏦','💹','📦','🏪',
-  '🍵','☕','🧃','🍺','🥤','🫖','🧋',
-];
-
 function getLinks(){ return JSON.parse(localStorage.getItem('nav-links')||'null')||defaultLinks; }
 function saveLinks(l){ localStorage.setItem('nav-links',JSON.stringify(l)); }
-
 function renderLinks(){
-  const links=getLinks();
-  $('links-grid').innerHTML=links.map(l=>`<a class="link-card" href="${esc(l.url)}" target="_blank"><span class="link-icon">${l.icon}</span><span class="link-name">${esc(l.name)}</span></a>`).join('');
+  $('links-grid').innerHTML=getLinks().map(x=>`<a class="link-card" href="${esc(x.url)}" target="_blank"><span class="link-icon">${x.icon}</span><span class="link-name">${esc(x.name)}</span></a>`).join('');
 }
 renderLinks();
 
-// ── LINKS EDITOR ──────────────────────────────────────
+// ── Editor de destinos ──
+const iconPalette=['✉️','📬','📮','📩','📤','📥','🗂️','📁','📂','🗃️','📋','📊','📈','⚙️','🔧','🛠️','🔩','⚒️','🔨','🪛','📡','📺','🎥','🎬','▶️','🔴','📻','🎌','🎎','⛩️','🏯','🎋','🎏','🎮','🕹️','👾','🎲','🃏','♟️','🏆','🔭','🌐','🌍','🗺️','🧭','🪐','⭐','⚔️','🗡️','🛡️','🏹','🪃','🔱','⚜️','🌙','🌟','✨','💫','🌠','🌌','🔮','💻','🖥️','⌨️','🖱️','💾','📱','🔋','🎵','🎶','🎸','🎹','📚','📖','📝','✏️','📰','🚀','✈️','⚓','🛸','🌊','🐚','🐋'];
 let ledData=[];
-
-function openLinksEditor(){
-  ledData=getLinks().map(l=>({...l}));
-  renderLED();
-  $('links-editor-modal').classList.add('open');
-}
-function closeLED(){
-  $('links-editor-modal').classList.remove('open');
-  document.querySelectorAll('.icon-picker').forEach(p=>p.classList.remove('open'));
-}
-
+function openLED(){ ledData=getLinks().map(l=>({...l})); renderLED(); $('led-modal').classList.add('open'); }
+function closeLED(){ $('led-modal').classList.remove('open'); document.querySelectorAll('.icon-picker').forEach(p=>p.classList.remove('open')); }
 function renderLED(){
   $('led-list').innerHTML=ledData.map((l,i)=>`
     <div class="led-row" id="led-row-${i}">
-      <div class="led-icon-pick">
-        <button class="led-icon-btn" onclick="toggleIconPicker(${i})" title="Cambiar icono"><span>${l.icon}</span></button>
-        <div class="icon-picker" id="icon-picker-${i}">
-          ${iconPalette.map(ic=>`<span class="icon-opt" onclick="pickIcon(${i},'${ic}')" title="${ic}">${ic}</span>`).join('')}
-        </div>
+      <div class="led-icon-wrap">
+        <button class="led-icon-btn" onclick="toggleIconPicker(${i})">${l.icon}</button>
+        <div class="icon-picker" id="ipick-${i}">${iconPalette.map(ic=>`<span class="icon-opt" onclick="pickIcon(${i},'${ic}')">${ic}</span>`).join('')}</div>
       </div>
-      <input class="led-inp" type="text" placeholder="Nombre" value="${esc(l.name)}" oninput="ledUpdate(${i},'name',this.value)">
-      <input class="led-inp" type="text" placeholder="URL" value="${esc(l.url)}" oninput="ledUpdate(${i},'url',this.value)">
-      <button class="led-del" onclick="ledRemove(${i})" title="Eliminar">✕</button>
-    </div>
-  `).join('');
+      <input class="led-inp" type="text" placeholder="Nombre" value="${esc(l.name)}" oninput="ledData[${i}].name=this.value">
+      <input class="led-inp" type="text" placeholder="URL" value="${esc(l.url)}" oninput="ledData[${i}].url=this.value">
+      <button class="led-del" onclick="ledRemove(${i})">✕</button>
+    </div>`).join('');
 }
+function toggleIconPicker(i){ document.querySelectorAll('.icon-picker').forEach(p=>p.classList.remove('open')); $(`ipick-${i}`).classList.toggle('open'); }
+function pickIcon(i,ic){ ledData[i].icon=ic; $(`ipick-${i}`).classList.remove('open'); renderLED(); }
+function ledAddRow(){ ledData.push({name:'Nuevo',url:'https://',icon:'🌐'}); renderLED(); }
+function ledRemove(i){ ledData.splice(i,1); renderLED(); }
+function ledSave(){ saveLinks(ledData); renderLinks(); closeLED(); addAlert('ok','DESTINOS ACTUALIZADOS'); }
+document.addEventListener('click',e=>{ if(!e.target.closest('.led-icon-wrap')) document.querySelectorAll('.icon-picker').forEach(p=>p.classList.remove('open')); });
 
-function toggleIconPicker(i){
-  document.querySelectorAll('.icon-picker').forEach((p,pi)=>{ if(pi!==i) p.classList.remove('open'); });
-  $(`icon-picker-${i}`).classList.toggle('open');
-}
-
-function pickIcon(i,icon){
-  ledData[i].icon=icon;
-  $(`icon-picker-${i}`).classList.remove('open');
-  renderLED();
-}
-
-function ledUpdate(i,field,val){ ledData[i][field]=val; }
-
-function ledAddRow(){
-  ledData.push({name:'Nuevo',url:'https://',icon:'🌐'});
-  renderLED();
-}
-
-function ledRemove(i){
-  ledData.splice(i,1);
-  renderLED();
-}
-
-function ledSave(){
-  // Read current input values before saving
-  $('led-list').querySelectorAll('.led-row').forEach((row,i)=>{
-    const inputs=row.querySelectorAll('.led-inp');
-    if(ledData[i]){ ledData[i].name=inputs[0].value; ledData[i].url=inputs[1].value; }
-  });
-  saveLinks(ledData);
-  renderLinks();
-  closeLED();
-  addAlert('ok','DESTINOS ACTUALIZADOS');
-}
-
-// Close icon picker on outside click
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.led-icon-pick')) document.querySelectorAll('.icon-picker').forEach(p=>p.classList.remove('open'));
-});
-
-// ═══════════════════════════════════════════════════════
-//  SEARCH
-// ═══════════════════════════════════════════════════════
+// ══ SEARCH ══
 let curEngine='google';
-const engines={
-  google:'https://www.google.com/search?q=',
-  duckduckgo:'https://duckduckgo.com/?q=',
-  youtube:'https://www.youtube.com/results?search_query=',
-  wikipedia:'https://en.wikipedia.org/w/index.php?search=',
-  mal:'https://myanimelist.net/search/all?q=',
-  fgo:'https://fategrandorder.fandom.com/wiki/Special:Search?query=',
-  typemoon:'https://typemoon.fandom.com/wiki/Special:Search?query='
-};
-function setEngine(name,btn){ curEngine=name; document.querySelectorAll('.eng-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+const engines={google:'https://www.google.com/search?q=',duckduckgo:'https://duckduckgo.com/?q=',youtube:'https://www.youtube.com/results?search_query=',wikipedia:'https://en.wikipedia.org/w/index.php?search=',mal:'https://myanimelist.net/search/all?q=',fgo:'https://fategrandorder.fandom.com/wiki/Special:Search?query=',typemoon:'https://typemoon.fandom.com/wiki/Special:Search?query='};
+function setEngine(n,btn){ curEngine=n; document.querySelectorAll('.eng-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
 function doSearch(){ const q=$('search-input').value.trim(); if(q) window.open(engines[curEngine]+encodeURIComponent(q),'_blank'); }
 $('search-input').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
 
-// ═══════════════════════════════════════════════════════
-//  AUDIO — Submarine Reverb + persistent mute
-// ═══════════════════════════════════════════════════════
+// ══ AUDIO ══
 let audioCtx=null, muted=localStorage.getItem('nav-muted')==='1', reverbNode=null;
-
 function getCtx(){ if(!audioCtx){ audioCtx=new(window.AudioContext||window.webkitAudioContext)(); buildReverb(); } return audioCtx; }
-function buildReverb(){
-  const ctx=audioCtx, len=ctx.sampleRate*3.5, buf=ctx.createBuffer(2,len,ctx.sampleRate);
-  for(let c=0;c<2;c++){ const ch=buf.getChannelData(c); for(let i=0;i<len;i++){ const d=Math.pow(1-i/len,2.2); ch[i]=(Math.random()*2-1)*d*(i<200?i/200:1); } }
-  reverbNode=ctx.createConvolver(); reverbNode.buffer=buf; reverbNode.connect(ctx.destination);
-}
-function playTone(freq,vol,dur,type='sine',rev=true,delay=0){
-  if(muted) return;
-  try{
-    const ctx=getCtx(),osc=ctx.createOscillator(),gain=ctx.createGain(),dry=ctx.createGain();
-    osc.type=type; osc.frequency.setValueAtTime(freq,ctx.currentTime+delay); osc.frequency.exponentialRampToValueAtTime(freq*0.35,ctx.currentTime+delay+dur);
-    gain.gain.setValueAtTime(0.001,ctx.currentTime+delay); gain.gain.linearRampToValueAtTime(vol,ctx.currentTime+delay+0.008); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+dur);
-    osc.connect(gain); dry.gain.value=0.35; gain.connect(dry); dry.connect(ctx.destination);
-    if(rev&&reverbNode){ const wet=ctx.createGain(); wet.gain.value=0.65; gain.connect(wet); wet.connect(reverbNode); }
-    osc.start(ctx.currentTime+delay); osc.stop(ctx.currentTime+delay+dur+0.1);
-  }catch(e){}
-}
+function buildReverb(){ const ctx=audioCtx,len=ctx.sampleRate*3.5,buf=ctx.createBuffer(2,len,ctx.sampleRate); for(let c=0;c<2;c++){ const ch=buf.getChannelData(c); for(let i=0;i<len;i++){ const d=Math.pow(1-i/len,2.2); ch[i]=(Math.random()*2-1)*d*(i<200?i/200:1); } } reverbNode=ctx.createConvolver(); reverbNode.buffer=buf; reverbNode.connect(ctx.destination); }
+function playTone(freq,vol,dur,type='sine',rev=true){ if(muted) return; try{ const ctx=getCtx(),osc=ctx.createOscillator(),gain=ctx.createGain(),dry=ctx.createGain(); osc.type=type; osc.frequency.setValueAtTime(freq,ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(freq*0.35,ctx.currentTime+dur); gain.gain.setValueAtTime(0.001,ctx.currentTime); gain.gain.linearRampToValueAtTime(vol,ctx.currentTime+0.008); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur); osc.connect(gain); dry.gain.value=0.35; gain.connect(dry); dry.connect(ctx.destination); if(rev&&reverbNode){ const wet=ctx.createGain(); wet.gain.value=0.65; gain.connect(wet); wet.connect(reverbNode); } osc.start(); osc.stop(ctx.currentTime+dur+0.1); }catch(e){} }
 function playSweepPing(){ playTone(520,0.06,1.2,'sine',true); setTimeout(()=>playTone(260,0.025,0.8,'sine',true),180); }
-function playAlertPing(){ playTone(1080,0.14,0.3,'sine',false); setTimeout(()=>playTone(780,0.11,0.45,'sine',true),320); }
+function playAlertPing(){ playTone(1080,0.12,0.28,'sine',false); setTimeout(()=>playTone(780,0.1,0.42,'sine',true),300); }
 function playSteamPing(){ playTone(420,0.1,0.5,'triangle',true); setTimeout(()=>playTone(560,0.08,0.35,'triangle',false),160); }
-function playMalPing(){ playTone(660,0.09,0.4,'sine',true); setTimeout(()=>playTone(880,0.07,0.3,'sine',false),220); }
-
-function applyMuteUI(){
-  $('mute-btn').textContent=muted?'🔇 SONAR':'🔊 SONAR';
-  $('mute-btn').classList.toggle('muted',muted);
-}
 function toggleMute(){ muted=!muted; localStorage.setItem('nav-muted',muted?'1':'0'); applyMuteUI(); }
+function applyMuteUI(){ $('mute-btn').textContent=muted?'🔇 SONAR':'🔊 SONAR'; $('mute-btn').classList.toggle('muted',muted); }
 applyMuteUI();
-
 let audioReady=false;
 document.addEventListener('click',()=>{ if(!audioReady){ audioReady=true; getCtx(); setInterval(playSweepPing,4000); } },{once:true});
 
-// ═══════════════════════════════════════════════════════
-//  PHOSPHOR SONAR (canvas)
-// ═══════════════════════════════════════════════════════
-(function initSonar(){
-  const svg=$('sonar-svg'),canvas=$('sonar-canvas'),container=$('sonar-container');
-  let angle=0; const SPEED=(2*Math.PI)/(4*60),TRAIL=Math.PI*0.62;
-  function resize(){ const r=svg.getBoundingClientRect(); canvas.width=r.width; canvas.height=r.height; canvas.style.width=r.width+'px'; canvas.style.height=r.height+'px'; }
-  function draw(){
-    const w=canvas.width,h=canvas.height; if(!w){requestAnimationFrame(draw);return;}
-    const sc=w/260,cx=130*sc,cy=130*sc,r=110*sc;
-    const c=canvas.getContext('2d'); c.clearRect(0,0,w,h);
-    for(let i=0;i<48;i++){
-      const t=i/48,t1=(i+1)/48,a0=angle-TRAIL*(1-t),a1=angle-TRAIL*(1-t1);
-      const alpha=Math.pow(t,1.4)*0.65,green=Math.floor(190+65*t);
-      c.beginPath(); c.moveTo(cx,cy); c.arc(cx,cy,r,a0,a1,false); c.closePath();
-      c.fillStyle=`rgba(0,${green},${Math.floor(100+155*t)},${alpha})`; c.fill();
-    }
-    const ex=cx+r*Math.cos(angle),ey=cy+r*Math.sin(angle);
-    const g=c.createLinearGradient(cx,cy,ex,ey);
-    g.addColorStop(0,'rgba(0,255,200,0)'); g.addColorStop(0.5,'rgba(0,255,200,0.55)'); g.addColorStop(1,'rgba(0,255,200,1)');
-    c.beginPath(); c.moveTo(cx,cy); c.lineTo(ex,ey); c.strokeStyle=g; c.lineWidth=2*sc; c.shadowBlur=14; c.shadowColor='#00ffc8'; c.stroke(); c.shadowBlur=0;
-    c.beginPath(); c.arc(ex,ey,3*sc,0,Math.PI*2); c.fillStyle='rgba(0,255,200,1)'; c.shadowBlur=12; c.shadowColor='#00ffc8'; c.fill(); c.shadowBlur=0;
-    angle+=SPEED; if(angle>Math.PI*2) angle-=Math.PI*2; requestAnimationFrame(draw);
-  }
-  resize(); new ResizeObserver(resize).observe(container); requestAnimationFrame(draw);
-})();
+// ══ PHOSPHOR SONAR ══
+(function(){ const svg=$('sonar-svg'),canvas=$('sonar-canvas'),container=$('sonar-container'); let angle=0; const SPEED=(2*Math.PI)/(4*60),TRAIL=Math.PI*0.62; function resize(){ const r=svg.getBoundingClientRect(); canvas.width=r.width; canvas.height=r.height; canvas.style.width=r.width+'px'; canvas.style.height=r.height+'px'; } function draw(){ const w=canvas.width,h=canvas.height; if(!w){requestAnimationFrame(draw);return;} const sc=w/260,cx=130*sc,cy=130*sc,r=110*sc,c=canvas.getContext('2d'); c.clearRect(0,0,w,h); for(let i=0;i<48;i++){ const t=i/48,t1=(i+1)/48,a0=angle-TRAIL*(1-t),a1=angle-TRAIL*(1-t1),alpha=Math.pow(t,1.4)*0.65,green=Math.floor(190+65*t); c.beginPath(); c.moveTo(cx,cy); c.arc(cx,cy,r,a0,a1,false); c.closePath(); c.fillStyle=`rgba(0,${green},${Math.floor(100+155*t)},${alpha})`; c.fill(); } const ex=cx+r*Math.cos(angle),ey=cy+r*Math.sin(angle),g=c.createLinearGradient(cx,cy,ex,ey); g.addColorStop(0,'rgba(0,255,200,0)'); g.addColorStop(0.5,'rgba(0,255,200,0.55)'); g.addColorStop(1,'rgba(0,255,200,1)'); c.beginPath(); c.moveTo(cx,cy); c.lineTo(ex,ey); c.strokeStyle=g; c.lineWidth=2*sc; c.shadowBlur=14; c.shadowColor='#00ffc8'; c.stroke(); c.shadowBlur=0; c.beginPath(); c.arc(ex,ey,3*sc,0,Math.PI*2); c.fillStyle='rgba(0,255,200,1)'; c.shadowBlur=12; c.shadowColor='#00ffc8'; c.fill(); c.shadowBlur=0; angle+=SPEED; if(angle>Math.PI*2) angle-=Math.PI*2; requestAnimationFrame(draw); } resize(); new ResizeObserver(resize).observe(container); requestAnimationFrame(draw); })();
 
-// ═══════════════════════════════════════════════════════
-//  ALERTS & BLIPS
-// ═══════════════════════════════════════════════════════
+// ══ ALERTS ══
 let alertTotal=0;
 const blipSlots={series:[{cx:155,cy:172},{cx:100,cy:66},{cx:178,cy:138},{cx:78,cy:170}],steam:[{cx:190,cy:76},{cx:70,cy:104},{cx:198,cy:158},{cx:58,cy:143}],mal:[{cx:142,cy:60},{cx:62,cy:118},{cx:195,cy:110},{cx:110,cy:190}]};
 const blipIdx={series:0,steam:0,mal:0};
+// 2. Track active blip IDs to avoid duplicates
+const activeBlipIds = new Set();
+
 function addAlert(type,msg){
   const feed=$('alerts-feed'),div=document.createElement('div'); div.className=`a-line a-${type}`;
   const n=new Date(); div.textContent=`[${pad(n.getHours())}:${pad(n.getMinutes())}] ${msg}`;
-  feed.insertBefore(div,feed.firstChild); while(feed.children.length>10) feed.removeChild(feed.lastChild);
+  feed.insertBefore(div,feed.firstChild); while(feed.children.length>12) feed.removeChild(feed.lastChild);
   if(type==='series'||type==='steam'||type==='mal'){
-    alertTotal++; const el=$('g-alerts'); el.textContent=alertTotal; el.style.color='var(--alert)'; el.classList.add('alert-active');
-    if(type==='steam') playSteamPing(); else if(type==='mal') playMalPing(); else playAlertPing();
+    alertTotal++; const el=$('g-alerts'); el.textContent=alertTotal; el.style.color='var(--amber)'; el.classList.add('alert-on');
+    if(type==='steam') playSteamPing(); else playAlertPing();
     spawnBlip(type);
   }
 }
-function spawnBlip(type){
+
+function spawnBlip(type,id=null){
+  // 2. Dedup: if id already has a blip, don't create another
+  if(id && activeBlipIds.has(id)) return;
+  if(id) activeBlipIds.add(id);
   const g=$('dyn-blips'),slot=blipSlots[type][blipIdx[type]++%blipSlots[type].length];
   const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
   c.setAttribute('cx',slot.cx); c.setAttribute('cy',slot.cy); c.setAttribute('r','4');
-  c.className.baseVal=type==='steam'?'sonar-blip-steam':type==='mal'?'sonar-blip-mal':'sonar-blip-alert';
-  $('dyn-blips').appendChild(c); $('sonar-status').textContent=`${$('dyn-blips').children.length+2} CONTACTOS // ACTIVO`;
-  setTimeout(()=>{ if(c.parentNode) c.parentNode.removeChild(c); },90000);
+  c.className.baseVal=type==='steam'?'sonar-blip-steam':'sonar-blip-alert';
+  g.appendChild(c); $('sonar-status').textContent=`${g.children.length+2} CONTACTOS // ACTIVO`;
+  setTimeout(()=>{ if(c.parentNode) c.parentNode.removeChild(c); if(id) activeBlipIds.delete(id); },120000);
 }
 
-// ═══════════════════════════════════════════════════════
-//  CONFIG
-// ═══════════════════════════════════════════════════════
+// ══ CONFIG ══
 function saveKey(type){ const val=$(`cfg-${type}`).value.trim(); if(!val) return; localStorage.setItem(`nav-key-${type}`,val); $(`cfg-${type}`).value=''; refreshConfig(); addAlert('ok',`${type.toUpperCase()} ACTUALIZADO`); }
-function refreshConfig(){
-  const tmdb=localStorage.getItem('nav-key-tmdb'),itad=localStorage.getItem('nav-key-itad');
-  const mal=getMalUser(),steam=getSteamId();
-  $('st-tmdb').innerHTML=tmdb?'◉ <span class="c-ok">ACTIVO</span>':'⬡ <span class="c-no">SIN CONFIGURAR</span>';
-  $('st-itad').innerHTML=itad?'◉ <span class="c-ok">ACTIVO</span>':'⬡ <span class="c-no">SIN CONFIGURAR</span>';
-  $('st-mal-user').innerHTML=mal?`◉ <span class="c-ok">${esc(mal)}</span>`:'⬡ <span class="c-no">NO CONFIGURADO</span>';
-  $('st-steam-id').innerHTML=steam?`◉ <span class="c-ok">${esc(steam)}</span>`:'⬡ <span class="c-no">NO CONFIGURADO</span>';
-}
+function refreshConfig(){ const tmdb=localStorage.getItem('nav-key-tmdb'),mal=getMalUser(); $('st-tmdb').innerHTML=tmdb?'◉ <span class="c-ok">ACTIVO</span>':'⬡ <span class="c-no">SIN CONFIGURAR</span>'; $('st-mal-user').innerHTML=mal?`◉ <span class="c-ok">${esc(mal)}</span>`:'⬡ <span class="c-no">NO CONFIGURADO</span>'; }
 refreshConfig();
 
-// ═══════════════════════════════════════════════════════
-//  SERIES TRACKER
-// ═══════════════════════════════════════════════════════
+// ══ SERIES TRACKER ══
 const getList=()=>JSON.parse(localStorage.getItem('nav-series')||'[]');
 const saveList=l=>localStorage.setItem('nav-series',JSON.stringify(l));
-
-function parseEp(epStr){ const m=String(epStr).match(/(\d+)/); return m?parseInt(m[1]):null; }
+function parseEp(s){ const m=String(s||'').match(/(\d+)/); return m?parseInt(m[1]):0; }
 function buildEpStr(n,total){ return total?`EP ${n} / ${total}`:`EP ${n}`; }
-
-// 5. +/- episode controls
-function changeEp(i,delta){
-  const l=getList(),s=l[i]; if(!s) return;
-  const cur=parseEp(s.ep||'0'), total=s.malEps||null;
-  const next=Math.max(0,cur+delta);
-  s.ep=buildEpStr(next,total); s.newEp=false;
-  saveList(l); renderSeries();
-}
+function changeEp(i,d){ const l=getList(),s=l[i]; if(!s) return; const cur=parseEp(s.ep),total=s.malEps||null; s.ep=buildEpStr(Math.max(0,cur+d),total); s.newEp=false; saveList(l); renderSeries(); }
 
 function renderSeries(){
   const list=getList(),el=$('series-list');
@@ -997,252 +815,277 @@ function renderSeries(){
       </div>
     </div>`).join('');
 }
-
 function cycleStatus(i){ const l=getList(),c=['watching','pending','done']; l[i].status=c[(c.indexOf(l[i].status)+1)%3]; l[i].newEp=false; saveList(l); renderSeries(); }
 function deleteEntry(i){ const l=getList(); l.splice(i,1); saveList(l); renderSeries(); }
 function clearDone(){ saveList(getList().filter(s=>s.status!=='done')); renderSeries(); }
 
-// MAL SEARCH
+// MAL SEARCH (modal)
 let malTimer=null,selMal=null;
 function malSearchDebounce(){ clearTimeout(malTimer); malTimer=setTimeout(doMalSearch,600); }
-async function doMalSearch(){
-  const q=$('m-mal-search').value.trim(),res=$('mal-results');
-  if(q.length<2){ res.classList.remove('open'); return; }
-  try{
-    res.innerHTML='<div class="mal-result-item">[ BUSCANDO... ]</div>'; res.classList.add('open');
-    const r=await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(q)}&limit=6&sfw=false`);
-    if(!r.ok) throw new Error();
-    const items=(await r.json()).data||[];
-    if(!items.length){ res.innerHTML='<div class="mal-result-item">[ SIN RESULTADOS ]</div>'; return; }
-    res.innerHTML=items.map(a=>`<div class="mal-result-item" onclick="selectMal(${a.mal_id},'${esc(a.title.replace(/'/g,"\\'"))}',${a.episodes||0})">${esc(a.title)}<small>${a.type||''} · ${a.episodes?a.episodes+' EP':'?'} · ${a.status||''}</small></div>`).join('');
-  }catch(e){ res.innerHTML='<div class="mal-result-item">[ ERROR JIKAN ]</div>'; }
-}
+async function doMalSearch(){ const q=$('m-mal-search').value.trim(),res=$('mal-results'); if(q.length<2){ res.classList.remove('open'); return; } try{ res.innerHTML='<div class="mal-result-item">[ BUSCANDO... ]</div>'; res.classList.add('open'); const r=await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(q)}&limit=6&sfw=false`); if(!r.ok) throw new Error(); const items=(await r.json()).data||[]; if(!items.length){ res.innerHTML='<div class="mal-result-item">[ SIN RESULTADOS ]</div>'; return; } res.innerHTML=items.map(a=>`<div class="mal-result-item" onclick="selectMal(${a.mal_id},'${esc(a.title.replace(/'/g,"\\'"))}',${a.episodes||0})">${esc(a.title)}<small>${a.type||''} · ${a.episodes?a.episodes+' EP':'?'} · ${a.status||''}</small></div>`).join(''); }catch(e){ res.innerHTML='<div class="mal-result-item">[ ERROR JIKAN ]</div>'; } }
 function selectMal(id,title,eps){ selMal={id,title,eps}; $('m-title').value=title; $('m-mal-search').value=title; $('mal-results').classList.remove('open'); $('m-ep').placeholder=eps?`EP 1 / ${eps}`:'EP 1'; }
 
-// MODAL
-function openModal(editIdx){
-  $('modal').classList.add('open'); selMal=null;
-  ['m-mal-search','m-title','m-ep','m-tmdb-id'].forEach(id=>{ $(id).value=''; });
-  $('mal-results').classList.remove('open');
-  if(editIdx!==null&&editIdx!==undefined){
-    const s=getList()[editIdx];
-    $('modal-ttl').textContent='EDITAR ENTRADA'; $('m-edit-idx').value=editIdx;
-    $('m-title').value=s.title||''; $('m-ep').value=s.ep||''; $('m-tmdb-id').value=s.tmdbId||''; $('m-status').value=s.status||'watching';
-    if(s.malId) selMal={id:s.malId,title:s.title,eps:s.malEps||0};
-  } else { $('modal-ttl').textContent='REGISTRAR ENTRADA'; $('m-edit-idx').value=''; $('m-status').value='watching'; }
-  setTimeout(()=>$('m-mal-search').focus(),50);
-}
+function openModal(editIdx){ $('modal').classList.add('open'); selMal=null; ['m-mal-search','m-title','m-ep','m-tmdb-id'].forEach(id=>{ $(id).value=''; }); $('mal-results').classList.remove('open'); if(editIdx!==null&&editIdx!==undefined){ const s=getList()[editIdx]; $('modal-ttl').textContent='EDITAR ENTRADA'; $('m-edit-idx').value=editIdx; $('m-title').value=s.title||''; $('m-ep').value=s.ep||''; $('m-tmdb-id').value=s.tmdbId||''; $('m-status').value=s.status||'watching'; if(s.malId) selMal={id:s.malId,title:s.title,eps:s.malEps||0}; } else { $('modal-ttl').textContent='REGISTRAR ENTRADA'; $('m-edit-idx').value=''; $('m-status').value='watching'; } setTimeout(()=>$('m-mal-search').focus(),50); }
 function closeModal(){ $('modal').classList.remove('open'); $('mal-results').classList.remove('open'); ['m-mal-search','m-title','m-ep','m-tmdb-id'].forEach(id=>{ $(id).value=''; }); $('m-edit-idx').value=''; selMal=null; }
-function saveEntry(){
-  const title=$('m-title').value.trim(); if(!title) return;
-  const l=getList(),idx=$('m-edit-idx').value;
-  const entry={title,ep:$('m-ep').value.trim(),tmdbId:$('m-tmdb-id').value.trim(),malId:selMal?.id||null,malEps:selMal?.eps||null,source:selMal?'MAL':($('m-tmdb-id').value.trim()?'TMDB':'MANUAL'),status:$('m-status').value,newEp:false,nextAir:null};
-  if(idx!=='') Object.assign(l[parseInt(idx)],entry); else l.push(entry);
-  saveList(l); renderSeries(); closeModal();
-}
+function saveEntry(){ const title=$('m-title').value.trim(); if(!title) return; const l=getList(),idx=$('m-edit-idx').value; const entry={title,ep:$('m-ep').value.trim(),tmdbId:$('m-tmdb-id').value.trim(),malId:selMal?.id||null,malEps:selMal?.eps||null,source:selMal?'MAL':($('m-tmdb-id').value.trim()?'TMDB':'MANUAL'),status:$('m-status').value,newEp:false,nextAir:null}; if(idx!=='') Object.assign(l[parseInt(idx)],entry); else l.push(entry); saveList(l); renderSeries(); closeModal(); }
 $('modal').addEventListener('click',e=>{ if(e.target===$('modal')) closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 renderSeries();
 
-// ═══════════════════════════════════════════════════════
-//  MAL IMPORT — 2. Fixed endpoint with trim
-// ═══════════════════════════════════════════════════════
+// ══ MAL IMPORT — Protocolo Apolo (allorigins + load.json) ══
 async function importFromMAL(){
   const user=getMalUser().trim();
   if(!user){ addAlert('ok','MAL: CONFIGURA TU USERNAME PRIMERO'); return; }
-  addAlert('ok',`>> IMPORTANDO DE MAL: ${user}...`);
+  addAlert('ok',`>> IMPORTANDO MAL: ${user}...`);
   try{
-    // v4 correct endpoint
-    const res=await fetch(`https://api.jikan.moe/v4/users/${encodeURIComponent(user)}/animelist?status=1&limit=25`);
+    // Protocolo Apolo: direct MAL load.json via allorigins proxy
+    const malUrl=`https://myanimelist.net/animelist/${encodeURIComponent(user)}/load.json?status=1&offset=0`;
+    const proxyUrl=proxy(malUrl);
+    const res=await fetch(proxyUrl,{ headers:{ 'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' } });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data=await res.json(),items=data.data||[];
-    if(!items.length){ addAlert('ok','MAL: LISTA VACÍA O PRIVADA'); return; }
-    const l=getList(); let added=0;
-    for(const item of items){
-      const malId=item.entry?.mal_id,title=item.entry?.title||'?'; if(!malId) continue;
-      const exists=l.find(s=>s.malId===malId);
-      const epStr=buildEpStr(item.episodes_watched||0, item.entry?.episodes||null);
-      if(!exists){ l.push({title,ep:epStr,malId,malEps:item.entry?.episodes||null,source:'MAL',status:'watching',newEp:false,nextAir:null}); added++; }
-      else if(exists.ep!==epStr){ exists.ep=epStr; }
-    }
-    saveList(l); renderSeries();
-    addAlert('mal',added>0?`MAL: +${added} IMPORTADAS`:`MAL: SINCRONIZADA`);
-  }catch(e){ addAlert('ok',`MAL ERROR: ${e.message}`); }
+    const wrapper=await res.json();
+    const items=JSON.parse(wrapper.contents||'[]');
+    if(!items.length){ throw new Error('lista vacía — intentando Jikan...'); }
+    processMALItems(items,'load.json');
+  }catch(e){
+    // Fallback: Jikan v4
+    addAlert('ok',`APOLO FALLÓ (${e.message}) — USANDO JIKAN...`);
+    try{
+      const user=getMalUser().trim();
+      const res=await fetch(`https://api.jikan.moe/v4/users/${encodeURIComponent(user)}/animelist?status=1&limit=25`);
+      if(!res.ok) throw new Error(`Jikan HTTP ${res.status}`);
+      const data=await res.json(), rawItems=data.data||[];
+      // Normalize Jikan format to match processMALItems
+      const items=rawItems.map(item=>({
+        anime_id: item.entry?.mal_id,
+        anime_title: item.entry?.title,
+        num_watched_episodes: item.episodes_watched||0,
+        anime_num_episodes: item.entry?.episodes||0
+      }));
+      processMALItems(items,'Jikan');
+    }catch(e2){ addAlert('ok',`MAL ERROR: ${e2.message}`); }
+  }
 }
 
-// ═══════════════════════════════════════════════════════
-//  4. ANIME CALENDAR — Smart 24h cache
-// ═══════════════════════════════════════════════════════
+function processMALItems(items, source){
+  const l=getList(); let added=0, updated=0;
+  for(const item of items){
+    const malId=item.anime_id, title=item.anime_title||'?';
+    if(!malId) continue;
+    const epStr=buildEpStr(item.num_watched_episodes||0, item.anime_num_episodes||null);
+    const exists=l.find(s=>s.malId===malId);
+    if(!exists){ l.push({title,ep:epStr,malId,malEps:item.anime_num_episodes||null,source:'MAL',status:'watching',newEp:false,nextAir:null,lastEpKnown:item.num_watched_episodes||0}); added++; }
+    else{ if(exists.ep!==epStr){ exists.ep=epStr; updated++; } }
+  }
+  saveList(l); renderSeries();
+  addAlert('mal',`MAL (${source}): +${added} nuevas, ${updated} actualizadas`);
+}
+
+// ══ ANIME CALENDAR — 24h cache ══
 const DAY_KEYS=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
 const DAY_ES=['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
 
 async function loadAnimeCalendar(force=false){
-  const cacheKey='nav-cal-cache';
-  const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');
-  const todayStr=today();
-
-  if(!force && cached && cached.date===todayStr){
-    renderCalendar(cached.schedule);
-    $('g-jikan').textContent='OK'; $('g-jikan').style.color='#4eff91';
-    $('cal-cache-note').textContent=`CACHÉ DEL ${cached.date} — SIN FETCH`;
-    return;
-  }
-
-  const grid=$('cal-grid');
-  grid.innerHTML='<div class="cal-loading">[ SINCRONIZANDO JIKAN (7 DÍAS)... ]</div>';
-  $('cal-cache-note').textContent='';
-
+  const cacheKey='nav-cal-cache', cached=JSON.parse(localStorage.getItem(cacheKey)||'null'), td=todayStr();
+  if(!force && cached && cached.date===td){ renderCalendar(cached.schedule); $('g-jikan').textContent='OK'; $('g-jikan').style.color='#4eff91'; $('cal-note').textContent=`CACHÉ ${cached.date}`; return; }
+  $('cal-grid').innerHTML='<div class="cal-loading">[ SINCRONIZANDO... ]</div>'; $('cal-note').textContent='';
   try{
     const schedule={};
     for(let i=0;i<7;i++){
-      await sleep(1500); // 1.5s anti-429
+      await sleep(1500);
       const r=await fetch(`https://api.jikan.moe/v4/schedules?filter=${DAY_KEYS[i]}&limit=20`);
       if(!r.ok) throw new Error(`HTTP ${r.status}`);
       schedule[DAY_KEYS[i]]=(await r.json()).data||[];
-      grid.innerHTML=`<div class="cal-loading">[ CARGANDO DÍA ${i+1}/7... ]</div>`;
+      $('cal-grid').innerHTML=`<div class="cal-loading">[ DÍA ${i+1}/7... ]</div>`;
     }
-    localStorage.setItem(cacheKey,JSON.stringify({date:todayStr,schedule}));
+    localStorage.setItem(cacheKey,JSON.stringify({date:td,schedule}));
     $('g-jikan').textContent='OK'; $('g-jikan').style.color='#4eff91';
-    $('cal-cache-note').textContent=`ACTUALIZADO ${todayStr}`;
-    renderCalendar(schedule);
-    addAlert('ok','JIKAN: CALENDARIO ACTUALIZADO Y EN CACHÉ');
+    $('cal-note').textContent=`ACTUALIZADO ${td}`;
+    renderCalendar(schedule); addAlert('ok','JIKAN: CALENDARIO EN CACHÉ');
   }catch(e){
-    $('g-jikan').textContent='ERR'; $('g-jikan').style.color='var(--rust)';
-    grid.innerHTML=`<div class="cal-loading">[ ERROR JIKAN: ${e.message} ]</div>`;
-    if(cached){ renderCalendar(cached.schedule); $('cal-cache-note').textContent=`USANDO CACHÉ DE ${cached.date}`; }
+    $('g-jikan').textContent='ERR'; $('g-jikan').style.color='var(--amber)';
+    $('cal-grid').innerHTML=`<div class="cal-loading">[ ERROR: ${e.message} ]</div>`;
+    if(cached){ renderCalendar(cached.schedule); $('cal-note').textContent=`CACHÉ DE ${cached.date}`; }
     setTimeout(()=>loadAnimeCalendar(false),180000);
   }
 }
-
 function renderCalendar(schedule){
-  const todayIdx=new Date().getDay(),grid=$('cal-grid');
-  grid.innerHTML='';
+  const todayIdx=new Date().getDay(), grid=$('cal-grid'); grid.innerHTML='';
   for(let d=0;d<7;d++){
     const di=(todayIdx+d)%7,dk=DAY_KEYS[di],entries=schedule[dk]||[],isToday=d===0;
-    const dayDiv=document.createElement('div'); dayDiv.className='cal-day'+(d>2?' collapsed-day':'');
-    const hdr=document.createElement('div'); hdr.className='cal-day-hdr'; hdr.onclick=()=>dayDiv.classList.toggle('collapsed-day');
+    const day=document.createElement('div'); day.className='cal-day'+(d>2?' collapsed-day':'');
+    const hdr=document.createElement('div'); hdr.className='cal-day-hdr'; hdr.onclick=()=>day.classList.toggle('collapsed-day');
     hdr.innerHTML=`<span class="cal-day-name ${isToday?'today-day':''}">${isToday?'◉ ':''} ${DAY_ES[di]}</span><span class="cal-count">${entries.length} SERIES</span>`;
-    dayDiv.appendChild(hdr);
-    const eDiv=document.createElement('div'); eDiv.className='cal-entries';
-    eDiv.innerHTML=entries.length
-      ?entries.map(a=>`<div class="cal-entry"><span class="cal-entry-time">${a.broadcast?.time||'??:??'}</span><span class="cal-entry-title" title="${esc(a.title)}">${esc(a.title)}</span><span class="cal-entry-ep">${a.episodes?a.episodes+'EP':'?'}</span></div>`).join('')
-      :'<div style="color:var(--text-dim);font-size:0.58rem;padding:4px 0">[ SIN ESTRENOS ]</div>';
-    dayDiv.appendChild(eDiv); grid.appendChild(dayDiv);
+    day.appendChild(hdr);
+    const ed=document.createElement('div'); ed.className='cal-entries';
+    ed.innerHTML=entries.length ? entries.map(a=>`<div class="cal-entry"><span class="cal-entry-time">${a.broadcast?.time||'??:??'}</span><span class="cal-entry-title" title="${esc(a.title)}">${esc(a.title)}</span><span class="cal-entry-ep">${a.episodes?a.episodes+'EP':'?'}</span></div>`).join('') : '<div style="color:var(--text-dim);font-size:0.58rem;padding:4px 0">[ SIN ESTRENOS ]</div>';
+    day.appendChild(ed); grid.appendChild(day);
   }
 }
 
-// ═══════════════════════════════════════════════════════
-//  JIKAN — EPISODE ALERTS (queued)
-// ═══════════════════════════════════════════════════════
+// ══ 3. SMART EPISODE ALERTS via Jikan ══
 const jikanQueue=[];let jikanRunning=false;
-async function jikanFlush(){ if(jikanRunning||!jikanQueue.length) return; jikanRunning=true; while(jikanQueue.length){ await jikanQueue.shift()(); await sleep(500); } jikanRunning=false; }
+async function jikanFlush(){ if(jikanRunning||!jikanQueue.length) return; jikanRunning=true; while(jikanQueue.length){ await jikanQueue.shift()(); await sleep(600); } jikanRunning=false; }
+
 async function checkMalEpisodes(){
-  const list=getList(); let changed=false; const t=today();
+  const list=getList(); let changed=false; const now=Date.now();
   for(let s of list){
     if(!s.malId||s.status==='done') continue;
+    const malId=s.malId;
     jikanQueue.push(async()=>{
       try{
-        const r=await fetch(`https://api.jikan.moe/v4/anime/${s.malId}`); if(!r.ok) return;
+        const r=await fetch(`https://api.jikan.moe/v4/anime/${malId}`); if(!r.ok) return;
         const d=(await r.json()).data; if(!d) return;
-        if(d.status==='Currently Airing'&&!s.newEp){
-          const er=await fetch(`https://api.jikan.moe/v4/anime/${s.malId}/episodes?page=1`); if(!er.ok) return;
+        // Smart alert: compare next_episode_at with user's current ep
+        const nextEpAt=d.broadcast?.next_episode_at ? new Date(d.broadcast.next_episode_at).getTime() : null;
+        const aired=d.aired?.to ? new Date(d.aired.to).getTime() : null;
+        const epCount=d.episodes||0;
+        const userEp=parseEp(s.ep);
+        const nextEpNum=userEp+1;
+        // Alert if: show is airing AND next episode number <= total AND next air time has passed
+        const isAiring=d.status==='Currently Airing';
+        let shouldAlert=false;
+        if(isAiring && nextEpAt && nextEpAt<=now && !s.newEp){ shouldAlert=true; s.nextAir=`EP${nextEpNum} · ${new Date(nextEpAt).toLocaleDateString('es',{month:'short',day:'numeric'})}`; }
+        else if(isAiring && !nextEpAt && !s.newEp){
+          // Fallback: fetch episodes list to find if ep nextEpNum exists
+          const er=await fetch(`https://api.jikan.moe/v4/anime/${malId}/episodes?page=1`); if(!er.ok) return;
           const eps=(await er.json()).data||[];
-          if(eps.length){ const last=eps[eps.length-1],air=last.aired?.split('T')[0];
-            if(air&&air<=t&&air>=new Date(Date.now()-7*864e5).toISOString().split('T')[0]){ s.newEp=true; changed=true; addAlert('mal',`${s.title.toUpperCase()} EP${last.episode_number||''} DISPONIBLE`); }
-          }
+          const found=eps.find(e=>e.episode_number===nextEpNum && e.aired);
+          if(found && new Date(found.aired).getTime()<=now){ shouldAlert=true; s.nextAir=`EP${nextEpNum}`; }
         }
+        if(shouldAlert){ s.newEp=true; changed=true; addAlert('mal',`${s.title.toUpperCase()} EP${nextEpNum} DISPONIBLE`); spawnBlip('mal',`mal-${malId}`); }
       }catch(e){}
     });
   }
   jikanFlush(); if(changed){ saveList(list); renderSeries(); }
 }
 
-// ═══════════════════════════════════════════════════════
-//  TMDB
-// ═══════════════════════════════════════════════════════
+// TMDB
 async function checkTMDB(){
   const key=localStorage.getItem('nav-key-tmdb'); if(!key) return;
-  const list=getList(); let changed=false; const t=today();
+  const list=getList(); let changed=false; const td=todayStr();
   for(let s of list){
     if(!s.tmdbId||s.status==='done') continue;
     try{
       const r=await fetch(`https://api.themoviedb.org/3/tv/${s.tmdbId}?api_key=${key}&language=es-MX`); if(!r.ok) continue;
       const d=await r.json();
-      if(d.next_episode_to_air){ const ne=d.next_episode_to_air; s.nextAir=`T${ne.season_number}E${ne.episode_number} · ${ne.air_date}`; if(ne.air_date<=t&&!s.newEp){s.newEp=true;changed=true;addAlert('series',`${s.title.toUpperCase()} T${ne.season_number}E${ne.episode_number} DISPONIBLE`);} }
-      else if(d.last_episode_to_air){ const le=d.last_episode_to_air; s.nextAir=null; const diff=(Date.now()-new Date(le.air_date))/864e5; if(diff<=7&&!s.newEp&&s.status==='watching'){s.newEp=true;changed=true;addAlert('series',`${s.title.toUpperCase()} T${le.season_number}E${le.episode_number} RECIENTE`);} }
+      if(d.next_episode_to_air){ const ne=d.next_episode_to_air; s.nextAir=`T${ne.season_number}E${ne.episode_number} · ${ne.air_date}`; if(ne.air_date<=td&&!s.newEp){s.newEp=true;changed=true;addAlert('series',`${s.title.toUpperCase()} T${ne.season_number}E${ne.episode_number} DISPONIBLE`);spawnBlip('series',`tmdb-${s.tmdbId}`);} }
+      else if(d.last_episode_to_air){ const le=d.last_episode_to_air; s.nextAir=null; const diff=(Date.now()-new Date(le.air_date))/864e5; if(diff<=7&&!s.newEp&&s.status==='watching'){s.newEp=true;changed=true;addAlert('series',`${s.title.toUpperCase()} T${le.season_number}E${le.episode_number} RECIENTE`);spawnBlip('series',`tmdb-${s.tmdbId}`);} }
     }catch(e){}
     await sleep(400);
   }
   if(changed){ saveList(list); renderSeries(); }
 }
 
-// ═══════════════════════════════════════════════════════
-//  STEAM WISHLIST
-// ═══════════════════════════════════════════════════════
-async function loadSteamWishlist(force=false){
-  const steamId=getSteamId(); if(!steamId){ $('steam-list').innerHTML='<div class="cal-loading">[ CONFIGURA TU STEAM ID ]</div>'; return; }
-  const cacheKey='nav-steam-cache';
-  const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');
-  if(!force && cached){ renderSteamList(cached.games); return; }
-  $('steam-list').innerHTML='<div class="cal-loading">[ CARGANDO WISHLIST... ]</div>';
+// ══ STEAM GAME TRACKER — Search by name, store AppID ══
+const getSteamGames=()=>JSON.parse(localStorage.getItem('nav-steam-games')||'[]');
+const saveSteamGames=l=>localStorage.setItem('nav-steam-games',JSON.stringify(l));
+
+let steamSearchTimer=null;
+function steamSearchDebounce(){ clearTimeout(steamSearchTimer); steamSearchTimer=setTimeout(steamSearch,600); }
+
+async function steamSearch(){
+  const q=$('steam-search-inp').value.trim(); if(q.length<2) return;
+  const res=$('steam-results');
+  res.innerHTML='<div class="steam-result-item">[ BUSCANDO... ]</div>'; res.classList.add('open');
   try{
-    const res=await fetch(`https://store.steampowered.com/wishlist/profiles/${steamId}/wishlistdata/?p=0`);
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data=await res.json();
-    const games=Object.entries(data).map(([id,g])=>({id,name:g.name,release:g.release_string||'TBD',priority:g.priority||0})).sort((a,b)=>a.priority-b.priority||a.name.localeCompare(b.name));
-    if(!games.length){ $('steam-list').innerHTML='<div class="cal-loading">[ WISHLIST VACÍA O PRIVADA ]</div>'; return; }
-    localStorage.setItem(cacheKey,JSON.stringify({ts:Date.now(),games}));
-    renderSteamList(games); addAlert('ok',`STEAM: ${games.length} JUEGOS`);
-  }catch(e){
-    if(cached){ renderSteamList(cached.games); addAlert('ok','STEAM: USANDO CACHÉ'); }
-    else $('steam-list').innerHTML=`<div class="cal-loading">[ STEAM: ERROR — REQUIERE HTTPS ]</div>`;
-  }
+    // Use allorigins to proxy Steam storesearch (CORS-safe)
+    const steamUrl=`https://store.steampowered.com/api/storesearch/?term=${encodeURIComponent(q)}&l=spanish&cc=US`;
+    const r=await fetch(proxy(steamUrl));
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const wrapper=await r.json();
+    const data=JSON.parse(wrapper.contents||'{}');
+    const items=(data.items||[]).slice(0,8);
+    if(!items.length){ res.innerHTML='<div class="steam-result-item">[ SIN RESULTADOS ]</div>'; return; }
+    res.innerHTML=items.map(g=>`<div class="steam-result-item" onclick="addSteamGame(${g.id},'${esc(g.name.replace(/'/g,"\\'"))}')">
+      ${esc(g.name)}<small>AppID: ${g.id}${g.price?' · '+g.price.final_formatted:''}</small>
+    </div>`).join('');
+  }catch(e){ res.innerHTML=`<div class="steam-result-item">[ ERROR: ${e.message} ]</div>`; }
 }
-function renderSteamList(games){
-  const deals=JSON.parse(localStorage.getItem('nav-steam-deals')||'{}');
-  $('steam-list').innerHTML=games.slice(0,20).map(g=>{
-    const deal=deals[g.id],onSale=deal&&deal.cut>=30;
-    return `<div class="steam-item ${onSale?'on-sale':''}">
-      <div style="min-width:0;flex:1;"><div class="steam-name" title="${esc(g.name)}">${esc(g.name)}</div><div class="steam-release">${esc(g.release)}</div></div>
-      ${onSale?`<span class="steam-price-sale">−${deal.cut}%</span>`:''}
+
+async function addSteamGame(appId,name){
+  $('steam-results').classList.remove('open');
+  $('steam-search-inp').value='';
+  const games=getSteamGames();
+  if(games.find(g=>g.id===appId)){ addAlert('ok',`${name} YA RASTREADO`); return; }
+  games.push({id:appId,name,price:null,discount:0,currency:'USD',lastChecked:null});
+  saveSteamGames(games);
+  addAlert('ok',`STEAM: ${name} AGREGADO`);
+  await fetchSteamPrice(appId);
+  renderSteamList();
+}
+
+async function fetchSteamPrice(appId){
+  try{
+    const steamUrl=`https://store.steampowered.com/api/appdetails?appids=${appId}&cc=us&filters=price_overview`;
+    const r=await fetch(proxy(steamUrl)); if(!r.ok) return;
+    const wrapper=await r.json();
+    const data=JSON.parse(wrapper.contents||'{}');
+    const info=data[String(appId)];
+    if(!info?.success) return;
+    const p=info.data?.price_overview;
+    const games=getSteamGames(), g=games.find(x=>x.id===appId); if(!g) return;
+    if(p){ g.price=p.final_formatted; g.discount=p.discount_percent||0; g.currency=p.currency||'USD'; }
+    else { g.price='GRATIS'; g.discount=0; }
+    g.lastChecked=Date.now();
+    saveSteamGames(games);
+    if(g.discount>=30) addAlert('steam',`${g.name} −${g.discount}% → ${g.price}`);
+  }catch(e){}
+}
+
+async function refreshSteamPrices(){
+  const games=getSteamGames(); if(!games.length){ addAlert('ok','STEAM: SIN JUEGOS RASTREADOS'); return; }
+  addAlert('ok',`STEAM: ACTUALIZANDO ${games.length} JUEGOS...`);
+  for(const g of games){ await fetchSteamPrice(g.id); await sleep(300); }
+  renderSteamList(); addAlert('ok','STEAM: PRECIOS ACTUALIZADOS');
+}
+
+function renderSteamList(){
+  const games=getSteamGames(), el=$('steam-list');
+  if(!games.length){ el.innerHTML='<div class="cal-loading">[ SIN JUEGOS RASTREADOS ]</div>'; return; }
+  el.innerHTML=games.map((g,i)=>`
+    <div class="steam-item ${g.discount>=30?'on-sale':''}">
+      <div style="min-width:0;flex:1;">
+        <div class="steam-name" title="${esc(g.name)}">${esc(g.name)}</div>
+        ${g.price?`<div class="steam-price ${g.discount>=30?'sale':''}">${g.discount>=30?`−${g.discount}% `:''}${esc(g.price)}</div>`:''}
+      </div>
       <a class="steam-link" href="https://store.steampowered.com/app/${g.id}" target="_blank">VER</a>
-    </div>`;
-  }).join('');
+      <button class="steam-del" onclick="removeSteamGame(${i})">✕</button>
+    </div>`).join('');
 }
-async function checkSteamDeals(){
-  const key=localStorage.getItem('nav-key-itad'); if(!key){ addAlert('ok','ITAD: CONFIGURA TU KEY'); return; }
-  try{
-    const res=await fetch(`https://api.isthereanydeal.com/deals/v2?key=${key}&shops=61&limit=10&sort=-cut`,{headers:{'Accept':'application/json'}});
-    if(!res.ok){ addAlert('ok','ITAD: SIN RESPUESTA'); return; }
-    const data=await res.json(),deals=(data.list||[]).filter(d=>(d.cut||0)>=30);
-    if(!deals.length){ addAlert('ok','STEAM: SIN OFERTAS ≥30%'); return; }
-    for(const d of deals.slice(0,3)){ const cut=Math.round(d.cut||0),p=d.price?.amount!=null?`$${d.price.amount.toFixed(2)}`:''; addAlert('steam',`${d.title} −${cut}% ${p}`); }
-    if(deals.length>3) addAlert('steam',`+${deals.length-3} OFERTAS MÁS`);
-  }catch(e){ addAlert('ok','ITAD: ERROR'); }
+function removeSteamGame(i){ const g=getSteamGames(); g.splice(i,1); saveSteamGames(g); renderSteamList(); }
+renderSteamList();
+
+// ══ MANUAL SCAN ══
+async function manualScan(){ addAlert('ok','>> SCAN...'); await checkTMDB(); await checkMalEpisodes(); addAlert('ok','>> SCAN COMPLETADO'); }
+
+// ══ 2. BOOT SCAN — auto scan on load ══
+async function bootScan(){
+  if(!getMalUser()) return;
+  loadAnimeCalendar();
+  await sleep(1000);
+  checkTMDB();
+  await sleep(500);
+  checkMalEpisodes();
+  renderSteamList();
+  // Refresh Steam prices on load if games exist
+  const games=getSteamGames();
+  if(games.length) setTimeout(refreshSteamPrices, 3000);
 }
 
-// ═══════════════════════════════════════════════════════
-//  MANUAL SCAN & AUTO INIT
-// ═══════════════════════════════════════════════════════
-async function manualScan(){ addAlert('ok','>> SCAN...'); await checkTMDB(); await checkSteamDeals(); await checkMalEpisodes(); addAlert('ok','>> SCAN COMPLETADO'); }
+if(getMalUser()){ setTimeout(bootScan, 2000); }
+setInterval(()=>{ checkTMDB(); checkMalEpisodes(); },30*60*1000);
+setInterval(()=>loadAnimeCalendar(false),24*60*60*1000);
+setInterval(refreshSteamPrices, 4*60*60*1000);
 
-// Only auto-load if setup is done
-if(getMalUser()){
-  setTimeout(()=>{ loadAnimeCalendar(); loadSteamWishlist(); checkTMDB(); },4000);
-}
-setInterval(()=>{ checkTMDB(); checkSteamDeals(); checkMalEpisodes(); },30*60*1000);
-setInterval(()=>loadAnimeCalendar(false),24*60*60*1000); // respect 24h cache
-
-// ═══════════════════════════════════════════════════════
-//  7. GAUGES — 10,000 leguas base
-// ═══════════════════════════════════════════════════════
-let dep=10000; // 10,000 leagues
-setInterval(()=>{ dep+=(Math.random()-.5)*8; $('g-depth').textContent=dep.toFixed(0)+' lg'; },3200);
+// ══ GAUGES ══
+let dep=10000; setInterval(()=>{ dep+=(Math.random()-.5)*8; $('g-depth').textContent=dep.toFixed(0)+' lg'; },3200);
 let spd=12.4; setInterval(()=>{ spd=Math.max(10,Math.min(15,spd+(Math.random()-.5)*.2)); $('g-speed').textContent=spd.toFixed(1)+' kn'; },2100);
 </script>
-<!-- LINKS EDITOR MODAL -->
-<div class="modal-ov" id="links-editor-modal">
-  <div class="link-editor-modal">
+
+<!-- MODAL EDITOR DESTINOS -->
+<div class="modal-ov" id="led-modal">
+  <div class="led-modal">
     <div class="led-title">✎ EDITAR DESTINOS // ACCESOS DIRECTOS</div>
     <div class="led-list" id="led-list"></div>
     <button class="led-add-btn" onclick="ledAddRow()">+ AGREGAR DESTINO</button>
