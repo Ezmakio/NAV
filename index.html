@@ -912,10 +912,22 @@ function playSweepPing(){ playTone(520,0.06,1.2,'sine',true,true); setTimeout(()
 function playAlertPing(){ playTone(1080,0.12,0.28,'sine',false); setTimeout(()=>playTone(780,0.1,0.42,'sine',true),300); }
 function playSteamPing(){ playTone(520,0.1,0.5,'sine',true); setTimeout(()=>playTone(660,0.08,0.35,'sine',false),160); }
 function playTimerDone(){
-  if(muted) return;
+  // La alarma del timer SIEMPRE suena — ignora mutedSonar y muted
+  function forceTone(freq,vol,dur){
+    try{
+      const ctx=getCtx(),osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.type='sine'; osc.frequency.setValueAtTime(freq,ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(freq*0.35,ctx.currentTime+dur);
+      gain.gain.setValueAtTime(0.001,ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(vol,ctx.currentTime+0.008);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime+dur+0.1);
+    }catch(_){}
+  }
   [{freq:880,delay:0},{freq:880,delay:350},{freq:880,delay:700},{freq:660,delay:1100},{freq:440,delay:1500}]
-    .forEach(({freq,delay})=>setTimeout(()=>playTone(freq,0.18,0.25,'sine',false),delay));
-  setTimeout(()=>playTone(330,0.12,1.2,'sine',true),1900);
+    .forEach(({freq,delay})=>setTimeout(()=>forceTone(freq,0.18,0.25),delay));
+  setTimeout(()=>forceTone(330,0.12,1.2),1900);
 }
 function toggleMute(){ mutedSonar=!mutedSonar; localStorage.setItem('nav-muted-sonar',mutedSonar?'1':'0'); applyMuteUI(); }
 function applyMuteUI(){ $('mute-btn').textContent=mutedSonar?'🔇 SONAR':'🔊 SONAR'; $('mute-btn').classList.toggle('muted',mutedSonar); }
