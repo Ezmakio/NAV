@@ -1427,7 +1427,7 @@ setInterval(refreshSteamPrices,4*60*60*1000);
    GAUGES DECORATIVOS
 ══════════════════════════════════════════ */
 let dep=20.000;
-setInterval(()=>{ dep+=(Math.random()-.5)*8; $('g-depth').textContent=dep.toFixed(0)+' lg'; },3200);
+setInterval(()=>{ dep+=(Math.random()-.5)*0.08; $('g-depth').textContent=dep.toFixed(0)+' lg'; },3200);
 let spd=12.4;
 setInterval(()=>{ spd=Math.max(10,Math.min(15,spd+(Math.random()-.5)*.2)); $('g-speed').textContent=spd.toFixed(1)+' kn'; },2100);
 </script>
