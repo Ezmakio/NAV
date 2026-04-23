@@ -291,28 +291,28 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .m-cancel:hover{border-color:var(--amber);color:var(--amber);}
 
 /* DO IT FOR HER */
-.difh-wrap{position:relative;width:100%;min-height:240px;height:100%;}
-.difh-drop-zone{width:100%;height:100%;min-height:240px;border:2px dashed rgba(0,255,200,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color 0.2s,background 0.2s;background:rgba(0,255,200,0.01);}
+.difh-wrap{position:relative;width:100%;height:320px;} /* altura fija — footer siempre visible */
+.difh-drop-zone{width:100%;height:100%;border:2px dashed rgba(0,255,200,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color 0.2s,background 0.2s;background:rgba(0,255,200,0.01);}
 .difh-drop-zone:hover{border-color:rgba(0,255,200,0.35);background:rgba(0,255,200,0.03);}
 .difh-drop-zone.drag-over{border-color:var(--biolum);background:rgba(0,255,200,0.06);}
 .difh-drop-zone.has-image{border-color:transparent;cursor:default;}
 .difh-placeholder{display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;}
 .difh-icon{font-size:2rem;opacity:0.3;filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(4);}
 .difh-hint{font-size:0.58rem;color:var(--text-dim);letter-spacing:0.18em;text-align:center;line-height:1.6;}
-.difh-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:filter 0.35s,opacity 0.35s;}
+.difh-img{position:absolute;width:100%;height:100%;object-fit:cover;transform-origin:center center;transition:filter 0.35s,opacity 0.35s;}
 .difh-img.filter-biolum{filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(5) brightness(0.85);}
 .difh-img.filter-amber{filter:grayscale(1) sepia(1) hue-rotate(5deg) saturate(6) brightness(0.8);}
 .difh-img.filter-none{filter:none;}
 
-/* Botón editar — solo en hover sin modo edición */
-.difh-edit-btn-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s;pointer-events:none;}
+/* Botón editar — esquina superior derecha */
+.difh-edit-btn-wrap{position:absolute;top:8px;right:8px;opacity:0;transition:opacity 0.25s;pointer-events:none;z-index:2;}
 .difh-drop-zone.has-image:hover .difh-edit-btn-wrap{opacity:1;pointer-events:auto;}
 .difh-drop-zone.has-image.editing .difh-edit-btn-wrap{opacity:0;pointer-events:none;}
-.difh-edit-btn{background:rgba(3,10,14,0.8);border:1px solid var(--biolum-dim);color:var(--biolum);font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;padding:7px 16px;cursor:pointer;transition:all 0.2s;}
+.difh-edit-btn{background:rgba(3,10,14,0.85);border:1px solid var(--biolum-dim);color:var(--biolum);font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;padding:5px 10px;cursor:pointer;transition:all 0.2s;}
 .difh-edit-btn:hover{background:rgba(0,255,200,0.12);border-color:var(--biolum);}
 
-/* Panel de edición — visible solo en modo edición */
-.difh-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,10,14,0.95) 0%,rgba(3,10,14,0.6) 50%,rgba(3,10,14,0.15) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:12px;gap:8px;opacity:0;transition:opacity 0.25s;pointer-events:none;}
+/* Panel de edición — visible solo en modo .editing */
+.difh-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,10,14,0.96) 0%,rgba(3,10,14,0.65) 50%,rgba(3,10,14,0.2) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:12px;gap:7px;opacity:0;transition:opacity 0.25s;pointer-events:none;z-index:2;}
 .difh-drop-zone.has-image.editing .difh-overlay{opacity:1;pointer-events:auto;}
 
 .difh-filter-row{display:flex;gap:4px;align-items:center;}
@@ -320,28 +320,29 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .difh-filter-btn:hover,.difh-filter-btn.active{border-color:var(--biolum);color:var(--biolum);background:rgba(0,0,0,0.6);}
 
 .difh-slider-row{display:flex;align-items:center;gap:8px;}
-.difh-slider-lbl{font-size:0.5rem;color:var(--text-dim);letter-spacing:0.15em;white-space:nowrap;}
+.difh-slider-lbl{font-size:0.48rem;color:var(--text-dim);letter-spacing:0.12em;white-space:nowrap;min-width:54px;}
 .difh-range{flex:1;height:3px;cursor:pointer;accent-color:var(--biolum);}
 
 /* Flechas de posición */
-.difh-pos-group{display:flex;flex-direction:column;align-items:center;gap:2px;}
-.difh-pos-row{display:flex;gap:2px;align-items:center;}
-.difh-arrow{background:rgba(3,10,14,0.7);border:1px solid rgba(0,255,200,0.2);color:var(--text-dim);width:20px;height:20px;font-size:0.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:'Share Tech Mono',monospace;line-height:1;user-select:none;}
-.difh-arrow:hover{border-color:var(--biolum);color:var(--biolum);background:rgba(0,0,0,0.6);}
-.difh-arrow:active{background:rgba(0,255,200,0.1);}
-.difh-pos-lbl{font-size:0.44rem;color:var(--text-dim);letter-spacing:0.1em;text-align:center;opacity:0.6;}
-
 .difh-controls-row{display:flex;align-items:flex-end;gap:10px;}
 .difh-controls-main{flex:1;display:flex;flex-direction:column;gap:6px;}
+.difh-pos-group{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;}
+.difh-pos-lbl{font-size:0.44rem;color:var(--text-dim);letter-spacing:0.1em;text-align:center;opacity:0.6;margin-bottom:1px;}
+.difh-pos-row{display:flex;gap:2px;align-items:center;}
+.difh-arrow{background:rgba(3,10,14,0.7);border:1px solid rgba(0,255,200,0.2);color:var(--text-dim);width:20px;height:20px;font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;user-select:none;}
+.difh-arrow:hover{border-color:var(--biolum);color:var(--biolum);background:rgba(0,0,0,0.6);}
+.difh-arrow:active{background:rgba(0,255,200,0.1);}
+.difh-pos-center{width:20px;height:20px;border:1px solid rgba(0,255,200,0.08);display:flex;align-items:center;justify-content:center;}
 
-.difh-bottom-row{display:flex;justify-content:space-between;align-items:center;gap:6px;}
+.difh-bottom-row{display:flex;align-items:center;gap:5px;}
 .difh-done-btn,.difh-change-btn,.difh-clear-btn{background:rgba(3,10,14,0.7);font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;padding:4px 10px;cursor:pointer;transition:all 0.2s;}
 .difh-done-btn{border:1px solid var(--biolum-dim);color:var(--biolum);}
 .difh-done-btn:hover{background:rgba(0,255,200,0.12);}
 .difh-change-btn{border:1px solid rgba(0,255,200,0.2);color:var(--text-dim);}
 .difh-change-btn:hover{border-color:var(--biolum);color:var(--biolum);}
-.difh-clear-btn{border:1px solid rgba(232,160,48,0.3);color:rgba(232,160,48,0.6);}
+.difh-clear-btn{border:1px solid rgba(232,160,48,0.3);color:rgba(232,160,48,0.6);margin-left:auto;}
 .difh-clear-btn:hover{border-color:var(--amber);color:var(--amber);}
+
 
 .toast-wrap{position:fixed;bottom:24px;right:24px;z-index:4000;display:flex;flex-direction:column;gap:6px;pointer-events:none;}
 .toast{background:var(--plate);border:1px solid var(--biolum-dim);color:var(--biolum);font-family:'Share Tech Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;padding:8px 14px;box-shadow:0 0 20px rgba(0,255,200,0.12);animation:toastIn 0.3s ease,toastOut 0.4s ease 2.6s forwards;pointer-events:none;}
@@ -458,7 +459,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- DO IT FOR HER -->
-  <div class="panel" style="flex:1;min-height:260px;">
+  <div class="panel" style="min-height:0;">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">DO IT FOR HER // MOTIVACIÓN</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -499,6 +500,11 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
                   <span class="difh-slider-lbl">INTENSIDAD</span>
                   <input type="range" class="difh-range" id="difh-opacity" min="10" max="100" value="85"
                     oninput="difhUpdateOpacity(this.value)" onclick="event.stopPropagation()">
+                </div>
+                <div class="difh-slider-row">
+                  <span class="difh-slider-lbl">ZOOM</span>
+                  <input type="range" class="difh-range" id="difh-zoom" min="100" max="200" value="100"
+                    oninput="difhUpdateZoom(this.value)" onclick="event.stopPropagation()">
                 </div>
               </div>
               <!-- Flechas de posición -->
@@ -1552,6 +1558,7 @@ let difhFilter  = localStorage.getItem('nav-difh-filter')||'biolum';
 let difhOpacity = parseInt(localStorage.getItem('nav-difh-opacity')||'85');
 let difhPosX    = parseInt(localStorage.getItem('nav-difh-px')||'50');
 let difhPosY    = parseInt(localStorage.getItem('nav-difh-py')||'50');
+let difhZoom    = parseInt(localStorage.getItem('nav-difh-zoom')||'100');
 
 function difhZoneClick(e){
   if(!$('difh-drop').classList.contains('has-image')) $('difh-file').click();
@@ -1572,15 +1579,22 @@ function difhLoadFile(file){
   reader.readAsDataURL(file);
 }
 
-function difhApplyPos(){
-  $('difh-img').style.objectPosition=`${difhPosX}% ${difhPosY}%`;
+function difhApplyTransform(){
+  const img=$('difh-img');
+  img.style.objectPosition=`${difhPosX}% ${difhPosY}%`;
+  img.style.transform=`scale(${difhZoom/100})`;
 }
 function difhMove(dx,dy){
   difhPosX=Math.max(0,Math.min(100,difhPosX+dx));
   difhPosY=Math.max(0,Math.min(100,difhPosY+dy));
   localStorage.setItem('nav-difh-px',difhPosX);
   localStorage.setItem('nav-difh-py',difhPosY);
-  difhApplyPos();
+  difhApplyTransform();
+}
+function difhUpdateZoom(v){
+  difhZoom=parseInt(v);
+  localStorage.setItem('nav-difh-zoom',difhZoom);
+  difhApplyTransform();
 }
 
 function difhShow(b64){
@@ -1588,11 +1602,12 @@ function difhShow(b64){
   img.src=b64; img.style.display='block';
   img.style.opacity=difhOpacity/100;
   img.className='difh-img filter-'+difhFilter;
-  difhApplyPos();
+  difhApplyTransform();
   $('difh-placeholder').style.display='none';
   drop.classList.add('has-image');
   drop.classList.remove('editing');
   $('difh-opacity').value=difhOpacity;
+  $('difh-zoom').value=difhZoom;
   document.querySelectorAll('.difh-filter-btn').forEach(b=>{
     const t=b.textContent.trim();
     b.classList.toggle('active',
