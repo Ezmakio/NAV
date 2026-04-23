@@ -290,7 +290,59 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .m-cancel{background:transparent;border-color:rgba(232,160,48,0.25);color:var(--amber-dim);}
 .m-cancel:hover{border-color:var(--amber);color:var(--amber);}
 
-/* TOAST NOTIFICATION */
+/* DO IT FOR HER */
+.difh-wrap{position:relative;width:100%;min-height:240px;height:100%;}
+.difh-drop-zone{width:100%;height:100%;min-height:240px;border:2px dashed rgba(0,255,200,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color 0.2s,background 0.2s;background:rgba(0,255,200,0.01);}
+.difh-drop-zone:hover{border-color:rgba(0,255,200,0.35);background:rgba(0,255,200,0.03);}
+.difh-drop-zone.drag-over{border-color:var(--biolum);background:rgba(0,255,200,0.06);}
+.difh-drop-zone.has-image{border-color:transparent;cursor:default;}
+.difh-placeholder{display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;}
+.difh-icon{font-size:2rem;opacity:0.3;filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(4);}
+.difh-hint{font-size:0.58rem;color:var(--text-dim);letter-spacing:0.18em;text-align:center;line-height:1.6;}
+.difh-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:filter 0.35s,opacity 0.35s;}
+.difh-img.filter-biolum{filter:grayscale(1) sepia(1) hue-rotate(115deg) saturate(5) brightness(0.85);}
+.difh-img.filter-amber{filter:grayscale(1) sepia(1) hue-rotate(5deg) saturate(6) brightness(0.8);}
+.difh-img.filter-none{filter:none;}
+
+/* Botón editar — solo en hover sin modo edición */
+.difh-edit-btn-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s;pointer-events:none;}
+.difh-drop-zone.has-image:hover .difh-edit-btn-wrap{opacity:1;pointer-events:auto;}
+.difh-drop-zone.has-image.editing .difh-edit-btn-wrap{opacity:0;pointer-events:none;}
+.difh-edit-btn{background:rgba(3,10,14,0.8);border:1px solid var(--biolum-dim);color:var(--biolum);font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;padding:7px 16px;cursor:pointer;transition:all 0.2s;}
+.difh-edit-btn:hover{background:rgba(0,255,200,0.12);border-color:var(--biolum);}
+
+/* Panel de edición — visible solo en modo edición */
+.difh-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,10,14,0.95) 0%,rgba(3,10,14,0.6) 50%,rgba(3,10,14,0.15) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:12px;gap:8px;opacity:0;transition:opacity 0.25s;pointer-events:none;}
+.difh-drop-zone.has-image.editing .difh-overlay{opacity:1;pointer-events:auto;}
+
+.difh-filter-row{display:flex;gap:4px;align-items:center;}
+.difh-filter-btn{background:rgba(3,10,14,0.7);border:1px solid rgba(0,255,200,0.2);color:var(--text-dim);padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;}
+.difh-filter-btn:hover,.difh-filter-btn.active{border-color:var(--biolum);color:var(--biolum);background:rgba(0,0,0,0.6);}
+
+.difh-slider-row{display:flex;align-items:center;gap:8px;}
+.difh-slider-lbl{font-size:0.5rem;color:var(--text-dim);letter-spacing:0.15em;white-space:nowrap;}
+.difh-range{flex:1;height:3px;cursor:pointer;accent-color:var(--biolum);}
+
+/* Flechas de posición */
+.difh-pos-group{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.difh-pos-row{display:flex;gap:2px;align-items:center;}
+.difh-arrow{background:rgba(3,10,14,0.7);border:1px solid rgba(0,255,200,0.2);color:var(--text-dim);width:20px;height:20px;font-size:0.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:'Share Tech Mono',monospace;line-height:1;user-select:none;}
+.difh-arrow:hover{border-color:var(--biolum);color:var(--biolum);background:rgba(0,0,0,0.6);}
+.difh-arrow:active{background:rgba(0,255,200,0.1);}
+.difh-pos-lbl{font-size:0.44rem;color:var(--text-dim);letter-spacing:0.1em;text-align:center;opacity:0.6;}
+
+.difh-controls-row{display:flex;align-items:flex-end;gap:10px;}
+.difh-controls-main{flex:1;display:flex;flex-direction:column;gap:6px;}
+
+.difh-bottom-row{display:flex;justify-content:space-between;align-items:center;gap:6px;}
+.difh-done-btn,.difh-change-btn,.difh-clear-btn{background:rgba(3,10,14,0.7);font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;padding:4px 10px;cursor:pointer;transition:all 0.2s;}
+.difh-done-btn{border:1px solid var(--biolum-dim);color:var(--biolum);}
+.difh-done-btn:hover{background:rgba(0,255,200,0.12);}
+.difh-change-btn{border:1px solid rgba(0,255,200,0.2);color:var(--text-dim);}
+.difh-change-btn:hover{border-color:var(--biolum);color:var(--biolum);}
+.difh-clear-btn{border:1px solid rgba(232,160,48,0.3);color:rgba(232,160,48,0.6);}
+.difh-clear-btn:hover{border-color:var(--amber);color:var(--amber);}
+
 .toast-wrap{position:fixed;bottom:24px;right:24px;z-index:4000;display:flex;flex-direction:column;gap:6px;pointer-events:none;}
 .toast{background:var(--plate);border:1px solid var(--biolum-dim);color:var(--biolum);font-family:'Share Tech Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;padding:8px 14px;box-shadow:0 0 20px rgba(0,255,200,0.12);animation:toastIn 0.3s ease,toastOut 0.4s ease 2.6s forwards;pointer-events:none;}
 .toast.toast-warn{border-color:var(--amber-dim);color:var(--amber);}
@@ -321,7 +373,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 <!-- HEADER -->
 <header class="header">
-  <div class="logo">N<em>A</em>V <small>// NAUTILUS OS v5.1</small></div>
+  <div class="logo">N<em>A</em>V <small>// NAUTILUS OS v5.2</small></div>
   <div class="header-gauges">
     <div class="gauge-item"><span class="gauge-label">PROFUNDIDAD</span><span class="gauge-val" id="g-depth">20.000 lg</span></div>
     <div class="gauge-item"><span class="gauge-label">VELOCIDAD</span><span class="gauge-val" id="g-speed">12.4 kn</span></div>
@@ -394,7 +446,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- DESTINOS -->
-  <div class="panel" style="flex:1;">
+  <div class="panel">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">DESTINOS // ACCESOS DIRECTOS</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -403,6 +455,76 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <div class="links-edit-bar"><button class="links-edit-btn" onclick="openLED()">✎ EDITAR</button></div>
       <div class="links-grid" id="links-grid"></div>
     </div></div>
+  </div>
+
+  <!-- DO IT FOR HER -->
+  <div class="panel" style="flex:1;min-height:260px;">
+    <div class="panel-header" onclick="togglePanel(this)">
+      <span class="panel-label">DO IT FOR HER // MOTIVACIÓN</span>
+      <span class="panel-toggle"><span class="chevron">▼</span></span>
+    </div>
+    <div class="panel-body" style="height:100%;">
+      <div class="difh-wrap">
+        <input type="file" id="difh-file" accept="image/*" style="display:none" onchange="difhFileChange(event)">
+        <div class="difh-drop-zone" id="difh-drop"
+          ondragover="difhDragOver(event)"
+          ondragleave="difhDragLeave()"
+          ondrop="difhDrop(event)"
+          onclick="difhZoneClick(event)">
+
+          <!-- Estado vacío -->
+          <div class="difh-placeholder" id="difh-placeholder">
+            <div class="difh-icon">⚓</div>
+            <div class="difh-hint">ARRASTRAR IMAGEN<br><span style="opacity:0.5;font-size:0.5rem">o clic para elegir</span></div>
+          </div>
+
+          <!-- Imagen -->
+          <img id="difh-img" class="difh-img filter-biolum" style="display:none" alt="">
+
+          <!-- Botón editar — solo hover normal -->
+          <div class="difh-edit-btn-wrap">
+            <button class="difh-edit-btn" onclick="difhEnterEdit(event)">✎ EDITAR</button>
+          </div>
+
+          <!-- Panel de edición completo — solo en modo .editing -->
+          <div class="difh-overlay">
+            <div class="difh-controls-row">
+              <div class="difh-controls-main">
+                <div class="difh-filter-row">
+                  <button class="difh-filter-btn active" onclick="difhSetFilter('biolum',this)">BIOLUM</button>
+                  <button class="difh-filter-btn" onclick="difhSetFilter('amber',this)">ÁMBAR</button>
+                  <button class="difh-filter-btn" onclick="difhSetFilter('none',this)">NINGUNO</button>
+                </div>
+                <div class="difh-slider-row">
+                  <span class="difh-slider-lbl">INTENSIDAD</span>
+                  <input type="range" class="difh-range" id="difh-opacity" min="10" max="100" value="85"
+                    oninput="difhUpdateOpacity(this.value)" onclick="event.stopPropagation()">
+                </div>
+              </div>
+              <!-- Flechas de posición -->
+              <div class="difh-pos-group">
+                <div class="difh-pos-lbl">POSICIÓN</div>
+                <div class="difh-pos-row"><button class="difh-arrow" onclick="difhMove(0,-10)">▲</button></div>
+                <div class="difh-pos-row">
+                  <button class="difh-arrow" onclick="difhMove(-10,0)">◀</button>
+                  <div style="width:20px;height:20px;border:1px solid rgba(0,255,200,0.1);display:flex;align-items:center;justify-content:center;">
+                    <div style="width:4px;height:4px;background:var(--biolum-dim);opacity:0.5;"></div>
+                  </div>
+                  <button class="difh-arrow" onclick="difhMove(10,0)">▶</button>
+                </div>
+                <div class="difh-pos-row"><button class="difh-arrow" onclick="difhMove(0,10)">▼</button></div>
+              </div>
+            </div>
+            <div class="difh-bottom-row">
+              <button class="difh-done-btn" onclick="difhExitEdit(event)">✔ LISTO</button>
+              <button class="difh-change-btn" onclick="difhChangeImg(event)">↑ CAMBIAR</button>
+              <button class="difh-clear-btn" onclick="difhClear(event)">✕ LIMPIAR</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
 
 </main>
@@ -541,11 +663,11 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 <footer class="bottom-bar">
   <div class="pulse-dot"></div>
-  <span>NAUTILUS NAV v5.1</span>
+  <span>NAUTILUS NAV v5.2</span>
   <span class="sep">//</span>
   <span>SISTEMA <span class="mini-gauge"><span class="mini-gauge-fill"></span></span></span>
   <span class="sep">//</span>
-  <span>20,000 LEGUAS BAJO EL MAR</span>
+  <span>10.000 LEGUAS BAJO EL MAR</span>
   <span style="margin-left:auto;color:var(--biolum);">◉ EN LÍNEA</span>
 </footer>
 </div><!-- /layout -->
@@ -1424,8 +1546,83 @@ setInterval(()=>loadAnimeCalendar(false),24*60*60*1000);
 setInterval(refreshSteamPrices,4*60*60*1000);
 
 /* ══════════════════════════════════════════
-   GAUGES DECORATIVOS
+   DO IT FOR HER
 ══════════════════════════════════════════ */
+let difhFilter  = localStorage.getItem('nav-difh-filter')||'biolum';
+let difhOpacity = parseInt(localStorage.getItem('nav-difh-opacity')||'85');
+let difhPosX    = parseInt(localStorage.getItem('nav-difh-px')||'50');
+let difhPosY    = parseInt(localStorage.getItem('nav-difh-py')||'50');
+
+function difhZoneClick(e){
+  if(!$('difh-drop').classList.contains('has-image')) $('difh-file').click();
+}
+function difhEnterEdit(e){ e.stopPropagation(); $('difh-drop').classList.add('editing'); }
+function difhExitEdit(e) { e.stopPropagation(); $('difh-drop').classList.remove('editing'); }
+function difhChangeImg(e){ e.stopPropagation(); $('difh-file').click(); }
+function difhDragOver(e) { e.preventDefault(); $('difh-drop').classList.add('drag-over'); }
+function difhDragLeave()  { $('difh-drop').classList.remove('drag-over'); }
+function difhDrop(e){
+  e.preventDefault(); $('difh-drop').classList.remove('drag-over');
+  const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')) difhLoadFile(f);
+}
+function difhFileChange(e){ const f=e.target.files[0]; if(f) difhLoadFile(f); e.target.value=''; }
+function difhLoadFile(file){
+  const reader=new FileReader();
+  reader.onload=ev=>{ localStorage.setItem('nav-difh-img',ev.target.result); difhShow(ev.target.result); };
+  reader.readAsDataURL(file);
+}
+
+function difhApplyPos(){
+  $('difh-img').style.objectPosition=`${difhPosX}% ${difhPosY}%`;
+}
+function difhMove(dx,dy){
+  difhPosX=Math.max(0,Math.min(100,difhPosX+dx));
+  difhPosY=Math.max(0,Math.min(100,difhPosY+dy));
+  localStorage.setItem('nav-difh-px',difhPosX);
+  localStorage.setItem('nav-difh-py',difhPosY);
+  difhApplyPos();
+}
+
+function difhShow(b64){
+  const img=$('difh-img'), drop=$('difh-drop');
+  img.src=b64; img.style.display='block';
+  img.style.opacity=difhOpacity/100;
+  img.className='difh-img filter-'+difhFilter;
+  difhApplyPos();
+  $('difh-placeholder').style.display='none';
+  drop.classList.add('has-image');
+  drop.classList.remove('editing');
+  $('difh-opacity').value=difhOpacity;
+  document.querySelectorAll('.difh-filter-btn').forEach(b=>{
+    const t=b.textContent.trim();
+    b.classList.toggle('active',
+      (t==='BIOLUM'&&difhFilter==='biolum')||
+      (t==='ÁMBAR'&&difhFilter==='amber')||
+      (t==='NINGUNO'&&difhFilter==='none')
+    );
+  });
+}
+function difhSetFilter(f,btn){
+  difhFilter=f; localStorage.setItem('nav-difh-filter',f);
+  document.querySelectorAll('.difh-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  $('difh-img').className='difh-img filter-'+f;
+}
+function difhUpdateOpacity(v){
+  difhOpacity=parseInt(v); $('difh-img').style.opacity=difhOpacity/100;
+  localStorage.setItem('nav-difh-opacity',difhOpacity);
+}
+function difhClear(e){
+  e.stopPropagation();
+  localStorage.removeItem('nav-difh-img');
+  $('difh-img').src=''; $('difh-img').style.display='none';
+  $('difh-placeholder').style.display='flex';
+  $('difh-drop').classList.remove('has-image','editing');
+}
+
+// Restaurar al cargar
+(function(){ const b64=localStorage.getItem('nav-difh-img'); if(b64) difhShow(b64); })();
+
 let dep=20000;
 setInterval(()=>{ dep+=(Math.random()-.5)*8; $('g-depth').textContent=Math.round(dep).toLocaleString('es')+' lg'; },3200);
 let spd=12.4;
