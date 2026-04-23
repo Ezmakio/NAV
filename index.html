@@ -291,8 +291,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .m-cancel:hover{border-color:var(--amber);color:var(--amber);}
 
 /* DO IT FOR HER */
-.difh-wrap{position:relative;width:100%;height:320px;} /* altura fija — footer siempre visible */
-.difh-drop-zone{width:100%;height:100%;border:2px dashed rgba(0,255,200,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color 0.2s,background 0.2s;background:rgba(0,255,200,0.01);}
+.difh-wrap{position:relative;width:100%;height:100%;min-height:180px;}
+.difh-drop-zone{width:100%;height:100%;min-height:180px;border:2px dashed rgba(0,255,200,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color 0.2s,background 0.2s;background:rgba(0,255,200,0.01);}
 .difh-drop-zone:hover{border-color:rgba(0,255,200,0.35);background:rgba(0,255,200,0.03);}
 .difh-drop-zone.drag-over{border-color:var(--biolum);background:rgba(0,255,200,0.06);}
 .difh-drop-zone.has-image{border-color:transparent;cursor:default;}
@@ -459,12 +459,12 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- DO IT FOR HER -->
-  <div class="panel" style="min-height:0;">
+  <div class="panel" style="flex:1;min-height:0;max-height:520px;">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">DO IT FOR HER // MOTIVACIÓN</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
     </div>
-    <div class="panel-body" style="height:100%;">
+    <div class="panel-body" style="height:calc(100% - 37px);">
       <div class="difh-wrap">
         <input type="file" id="difh-file" accept="image/*" style="display:none" onchange="difhFileChange(event)">
         <div class="difh-drop-zone" id="difh-drop"
