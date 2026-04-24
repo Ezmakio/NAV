@@ -179,9 +179,15 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 /* SERIES LIST */
 .series-list{display:flex;flex-direction:column;gap:7px;max-height:280px;overflow-y:auto;padding-right:2px;}
-.s-item{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:6px;padding:8px 10px;border:1px solid rgba(0,255,200,0.09);background:rgba(0,0,0,0.18);position:relative;}
+.s-item{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:6px;padding:8px 10px;border:1px solid rgba(0,255,200,0.09);background:rgba(0,0,0,0.18);position:relative;transition:border-color 0.15s,opacity 0.15s;}
 .s-item.has-alert{border-color:rgba(232,160,48,0.5);}
 .s-item.has-alert::before{content:'◉ NUEVO EP';position:absolute;top:-7px;right:8px;font-size:0.52rem;color:var(--amber);background:var(--deep);padding:0 4px;letter-spacing:0.1em;text-shadow:0 0 8px var(--amber);}
+.s-item.dragging{opacity:0.35;border-color:var(--biolum-dim);}
+.s-item.drag-over{border-color:var(--biolum);border-style:dashed;}
+.s-drag{display:flex;flex-direction:column;gap:2px;cursor:grab;padding:2px 4px;opacity:0.3;transition:opacity 0.15s;flex-shrink:0;}
+.s-drag:active{cursor:grabbing;}
+.s-item:hover .s-drag{opacity:0.7;}
+.s-drag span{display:block;width:10px;height:1px;background:var(--biolum);}
 .s-title{font-size:0.72rem;color:var(--text-main);}
 .s-ep-row{display:flex;align-items:center;gap:4px;margin-top:2px;}
 .s-ep{font-size:0.6rem;color:var(--text-dim);min-width:44px;}
@@ -388,7 +394,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 <main class="main-panel">
 
   <!-- CHRONO -->
-  <div class="panel">
+  <div class="panel" data-panel-id="chrono">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">CHRONO // TIEMPO NAVAL</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -423,7 +429,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- BÚSQUEDA -->
-  <div class="panel">
+  <div class="panel" data-panel-id="busqueda">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">NAVEGACIÓN // BÚSQUEDA</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -447,7 +453,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- DESTINOS -->
-  <div class="panel">
+  <div class="panel" data-panel-id="destinos">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">DESTINOS // ACCESOS DIRECTOS</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -459,7 +465,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- DO IT FOR HER -->
-  <div class="panel" style="flex:1;min-height:0;max-height:1040px;">
+  <div class="panel" data-panel-id="difh" style="flex:1;min-height:0;max-height:1040px;">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">DO IT FOR HER // MOTIVACIÓN</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -539,7 +545,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 <aside class="sidebar">
 
   <!-- SONAR -->
-  <div class="panel">
+  <div class="panel" data-panel-id="sonar">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">SONAR // SECTOR SCAN</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -580,7 +586,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- BITÁCORA -->
-  <div class="panel">
+  <div class="panel" data-panel-id="bitacora">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">BITÁCORA // SERIES & ANIME</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -597,7 +603,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- CALENDARIO -->
-  <div class="panel">
+  <div class="panel" data-panel-id="calendario">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">CALENDARIO // ESTRENOS ANIME</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -616,7 +622,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- STEAM -->
-  <div class="panel">
+  <div class="panel" data-panel-id="steam">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">STEAM // RASTREADOR DE JUEGOS</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -637,7 +643,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
 
   <!-- CONFIG -->
-  <div class="panel collapsed">
+  <div class="panel collapsed" data-panel-id="config">
     <div class="panel-header" onclick="togglePanel(this)">
       <span class="panel-label">CONFIG // SEÑALES & CLAVES</span>
       <span class="panel-toggle"><span class="chevron">▼</span></span>
@@ -807,7 +813,27 @@ checkFirstRun();
 /* ══════════════════════════════════════════
    PANEL TOGGLE
 ══════════════════════════════════════════ */
-function togglePanel(hdr){ hdr.closest('.panel').classList.toggle('collapsed'); }
+function togglePanel(hdr){
+  const panel=hdr.closest('.panel');
+  panel.classList.toggle('collapsed');
+  const id=panel.dataset.panelId;
+  if(id){
+    const states=JSON.parse(localStorage.getItem('nav-panel-states')||'{}');
+    states[id]=panel.classList.contains('collapsed');
+    localStorage.setItem('nav-panel-states',JSON.stringify(states));
+  }
+}
+// Restaurar estados al cargar
+(function(){
+  const states=JSON.parse(localStorage.getItem('nav-panel-states')||'{}');
+  document.querySelectorAll('.panel[data-panel-id]').forEach(panel=>{
+    const id=panel.dataset.panelId;
+    if(id in states){
+      if(states[id]) panel.classList.add('collapsed');
+      else panel.classList.remove('collapsed');
+    }
+  });
+})();
 
 /* ══════════════════════════════════════════
    RELOJ
@@ -1175,7 +1201,8 @@ function renderSeries(){
     return;
   }
   el.innerHTML=list.map((s,i)=>`
-    <div class="s-item ${s.newEp?'has-alert':''}">
+    <div class="s-item ${s.newEp?'has-alert':''}" draggable="true" data-idx="${i}">
+      <div class="s-drag" title="Arrastrar para reordenar"><span></span><span></span><span></span></div>
       <div style="min-width:0;">
         <div class="s-title">${esc(s.title)}</div>
         <div class="s-ep-row">
@@ -1194,6 +1221,37 @@ function renderSeries(){
         <button class="s-del" onclick="deleteEntry(${i})">✕</button>
       </div>
     </div>`).join('');
+  initSeriesDrag();
+}
+
+function initSeriesDrag(){
+  const items=[...$('series-list').querySelectorAll('.s-item')];
+  let dragIdx=null;
+  items.forEach(item=>{
+    item.addEventListener('dragstart',e=>{
+      dragIdx=parseInt(item.dataset.idx);
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    });
+    item.addEventListener('dragend',()=>{
+      item.classList.remove('dragging');
+      items.forEach(i=>i.classList.remove('drag-over'));
+    });
+    item.addEventListener('dragover',e=>{
+      e.preventDefault();
+      items.forEach(i=>i.classList.remove('drag-over'));
+      item.classList.add('drag-over');
+    });
+    item.addEventListener('drop',e=>{
+      e.preventDefault();
+      const dropIdx=parseInt(item.dataset.idx);
+      if(dragIdx===null||dragIdx===dropIdx) return;
+      const l=getList();
+      const moved=l.splice(dragIdx,1)[0];
+      l.splice(dropIdx,0,moved);
+      saveList(l); renderSeries();
+    });
+  });
 }
 function cycleStatus(i){
   const l=getList(), c=['watching','pending','done'];
